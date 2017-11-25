@@ -2,9 +2,15 @@
 
 This page attempts to explain the basic information you need to know to work with the QMK project. It assumes that you are familiar with navigating a Unix shell, but does not assume you are familiar with C or with compiling using make.
 
+このページはあなたが知りたいQMKプロジェクトについての基本情報について説明をするものです。
+読者はUnixのシェル操作に親しんでいることを想定していますが、makeを用いたC言語のコンパイルについて知らなくてもかまいません。
+
 ## Basic QMK structure
 
 QMK is a fork of [Jun Wako](https://github.com/tmk)'s [tmk_keyboard](https://github.com/tmk/tmk_keyboard) project. The original TMK code, with modifications, can be found in the `tmk` folder. The QMK additions to the project may be found in the `quantum` folder. Keyboard projects may be found in the `handwired` and `keyboard` folders.
+
+QMKはtmk_keyboardのフォークプロジェクトです。オリジナルのTMKコードは`tmk`フォルダにあります。
+QMKによる追加は`quantum`フォルダにあります。キーボードごとのプロジェクトは`hardwired`と`keyboard`フォルダにあります。
 
 ### Keyboard project structure
 

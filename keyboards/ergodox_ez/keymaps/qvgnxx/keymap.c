@@ -29,19 +29,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * ,--------------------------------------------------.           ,--------------------------------------------------.
  * |  Esc   |   1  |   2  |   3  |   4  |   5  | DEL  |           |      |   6  |   7  |   8  |   9  |   0  |  BS    |
  * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
- * |        |   Q  |   W  |   E  |   R  |   T  |  L1  |           |  L1  |   Y  |   U  |   I  |   O  |   P  |   -    |
+ * | Tab    |   Q  |   W  |   E  |   R  |   T  |  L1  |           |  L1  |   Y  |   U  |   I  |   O  |   P  |   -    |
  * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
- * | Tab    |   A  |   S  |   D  |   F  |   G  |------|           |------|   H  |   J  |   K  |   L  |;     | Enter  |
- * |--------+------+------+------+------+------| Hyper|           | Meh  |------+------+------+------+------+--------|
+ * | Bspace |   A  |   S  |   D  |   F  |   G  |------|           |------|   H  |   J  |   K  |   L  |;     | Enter  |
+ * |--------+------+------+------+------+------|  L2  |           |  L2  |------+------+------+------+------+--------|
  * | LShift |Z/Ctrl|   X  |   C  |   V  |   B  |      |           |      |   N  |   M  |   ,  |   .  |/     | RShift |
  * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
- *   | Ctrl |      |      |  Alt |Shift |                                       |Shift|      |   Up |  Dn  | TG3  |
+ *   | Ctrl | Ins  |      |  Alt |Shift |                                       |Shift|      |   Up |  Dn  | TG3  |
  *   `----------------------------------'                                       `----------------------------------'
  *                                        ,-------------.       ,-------------.
  *                                        | <    |   >  |       | Home | Alt    |
  *                                 ,------|------|------|       |------+--------+------.
  *                                 |      |      | PgUp |       | End  |        |      |
- *                                 | Cmd  |Ctrl  |------|       |------|  OSL1  |Enter |
+ *                                 | Cmd  |Ctrl  |------|       |------|  LT1   |Enter |
  *                                 |      |      | PgDn |       | Tab  |        |      |
  *                                 `--------------------'       `----------------------'
  */
@@ -49,12 +49,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [0] = KEYMAP(
                /* 左手 */
-               KC_ESCAPE,      KC_1, KC_2, KC_3, KC_4, KC_5, KC_DELETE, /* 7 */
-               KC_TRANSPARENT, KC_Q, KC_W, KC_E, KC_R, KC_T, LT(1,      KC_NO), /* 7 */
-               KC_TAB,         KC_A, KC_S, KC_D, KC_F, KC_G, /* 6 */
-               KC_LSHIFT,      KC_Z, KC_X, KC_C, KC_V, KC_B, LT(2,      KC_NO), /* 7 */
+               KC_ESCAPE,      KC_1, KC_2, KC_3, KC_4, KC_5, KC_DELETE,
+               KC_TAB, KC_Q, KC_W, KC_E, KC_R, KC_T, LT(1,      KC_NO),
+               KC_BSPACE,      KC_A, KC_S, KC_D, KC_F, KC_G,
+               KC_LSHIFT,      KC_Z, KC_X, KC_C, KC_V, KC_B, LT(2,      KC_NO),
 
-               KC_LCTL,KC_TRANSPARENT,KC_TRANSPARENT,KC_LALT,KC_LSHIFT, /*  */
+               KC_LCTL,KC_INSERT,KC_TRANSPARENT,KC_LALT,KC_LSHIFT,
 
                KC_LEFT,KC_RIGHT,
                KC_PGUP,
@@ -68,9 +68,34 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                KC_RSHIFT,   KC_TRANSPARENT,      KC_UP, KC_DOWN, TG(3),
                KC_HOME, KC_LALT,
                KC_END,
-               KC_TAB,  OSL(1), KC_SPACE),
+               KC_TAB,  LT(1,      KC_NO), KC_SPACE),
+
+/* layer0
+ *
+ * ,--------------------------------------------------.           ,--------------------------------------------------.
+ * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
+ * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |      |           |      |  -   |  =   |  [    |   ]  |  \   |        |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |------|           |------|  _   |  +   |  {   |    } |   |  |        |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |      |           |      |  "   |  '   |      |      |      |        |
+ * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
+ *   |      |      |      |      |      |                                       |     |      |      |      |      |
+ *   `----------------------------------'                                       `----------------------------------'
+ *                                        ,-------------.       ,-------------.
+ *                                        |      |      |       |      |        |
+ *                                 ,------|------|------|       |------+--------+------.
+ *                                 |      |      |      |       |      |        |      |
+ *                                 |      |      |------|       |------|        |      |
+ *                                 |      |      |      |       |      |        |      |
+ *                                 `--------------------'       `----------------------'
+ */
+
+
 
   [1] = KEYMAP(
+               /* 左手 */
                KC_GRAVE,       KC_F1,          KC_F2,          KC_F3,               KC_F4,               KC_F5,          RESET,
                KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, LGUI(LSFT(KC_TAB)),  LGUI(KC_TAB),        KC_TRANSPARENT, KC_TRANSPARENT,
                KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, SCMD_T(KC_LBRACKET), SCMD_T(KC_RBRACKET), KC_TRANSPARENT,
@@ -81,11 +106,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                RGB_0000FF,
                KC_TRANSPARENT, KC_TRANSPARENT, RGB_800080,
 
-
+               /* 右手 */
                TO(0),          KC_F6,          KC_F7,          KC_F8,               KC_F9,               KC_F10,         KC_F11,
                KC_TRANSPARENT, KC_MINUS,       KC_EQUAL,       KC_LBRACKET,         KC_RBRACKET,         KC_BSLASH,      KC_F12,
-               KC_QUOTE,       KC_KP_PLUS,     KC_LCBR,        KC_RCBR,             KC_PIPE,             KC_TRANSPARENT,
-               TO(2),          KC_DQUO,        KC_UNDS,        KC_TRANSPARENT,      KC_TRANSPARENT,      KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_UNDS,        KC_KP_PLUS,     KC_LCBR,        KC_RCBR,             KC_PIPE,             KC_TRANSPARENT,
+               TO(2),          KC_DQUO,        KC_QUOTE,       KC_TRANSPARENT,      KC_TRANSPARENT,      KC_TRANSPARENT, KC_TRANSPARENT,
 
                KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,      KC_TRANSPARENT,
                RGB_TOG,        RGB_SLD,
@@ -93,48 +118,53 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                KC_TRANSPARENT, RGB_HUD,        RGB_HUI),
 
 
-  [2] = KEYMAP(KC_TILD,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+  [2] = KEYMAP(
+               /* 左手 */
+               KC_TILD,        KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT,
+
+               KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+
+               /* 右手 */
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_UNDS,        KC_KP_PLUS,      KC_LCBR,        KC_RCBR,        KC_PIPE,        KC_TRANSPARENT,
+               KC_DQUO,        KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
 
 
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_UNDS,KC_KP_PLUS,KC_LCBR,KC_RCBR,KC_PIPE,KC_TRANSPARENT,
-KC_DQUO,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT,
 
-
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
+               KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT),
 
 
   [3] = KEYMAP(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
 
 
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
 
 
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,
-KC_TRANSPARENT,
-KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,
+               KC_TRANSPARENT,
+               KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
 
 
 };
@@ -303,3 +333,26 @@ uint32_t layer_state_set_user(uint32_t state) {
     return state;
 
 };
+
+
+/* テンプレート
+ *
+ * ,--------------------------------------------------.           ,--------------------------------------------------.
+ * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
+ * |--------+------+------+------+------+-------------|           |------+------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |------|           |------|      |      |      |      |      |        |
+ * |--------+------+------+------+------+------|      |           |      |------+------+------+------+------+--------|
+ * |        |      |      |      |      |      |      |           |      |      |      |      |      |      |        |
+ * `--------+------+------+------+------+-------------'           `-------------+------+------+------+------+--------'
+ *   |      |      |      |      |      |                                       |     |      |      |      |      |
+ *   `----------------------------------'                                       `----------------------------------'
+ *                                        ,-------------.       ,-------------.
+ *                                        |      |      |       |      |        |
+ *                                 ,------|------|------|       |------+--------+------.
+ *                                 |      |      |      |       |      |        |      |
+ *                                 |      |      |------|       |------|        |      |
+ *                                 |      |      |      |       |      |        |      |
+ *                                 `--------------------'       `----------------------'
+ */
