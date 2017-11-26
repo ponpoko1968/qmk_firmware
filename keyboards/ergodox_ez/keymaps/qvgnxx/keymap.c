@@ -61,7 +61,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                KC_LGUI,        KC_LCTL,  KC_PGDOWN,
 
                /* 右手 */
-               KC_TRNS,      KC_6,     KC_7,      KC_8,      KC_9,      KC_0,     KC_BSPACE,
+               LCTL(KC_RBRACKET),      KC_6,     KC_7,      KC_8,      KC_9,      KC_0,     KC_BSPACE,
                TG(1),          KC_Y,     KC_U,      KC_I,      KC_O,      KC_P,     KC_MINUS,
                KC_H,           KC_J,     KC_K,      KC_L,      KC_SCOLON, KC_ENTER,
                TG(2),          KC_N,     KC_M,      KC_COMMA,  KC_DOT,    KC_SLASH, KC_RSHIFT,
@@ -107,12 +107,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                KC_TRANSPARENT, KC_TRANSPARENT, RGB_800080,
 
                /* 右手 */
-               TO(0),          KC_F6,          KC_F7,          KC_F8,               KC_F9,               KC_F10,         KC_F11,
-               KC_TRANSPARENT, KC_MINUS,       KC_EQUAL,       KC_LBRACKET,         KC_RBRACKET,         KC_BSLASH,      KC_F12,
-               KC_UNDS,        KC_KP_PLUS,     KC_LCBR,        KC_RCBR,             KC_PIPE,             KC_TRANSPARENT,
-               TO(2),          KC_DQUO,        KC_QUOTE,       KC_TRANSPARENT,      KC_TRANSPARENT,      KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_F6,          KC_F7,          KC_F8,          KC_F9,          KC_F10,         KC_F11,
+               KC_TRANSPARENT, KC_MINUS,       KC_EQUAL,       KC_LBRACKET,    KC_RBRACKET,    KC_BSLASH,      KC_F12,
+                               KC_UNDS,        KC_KP_PLUS,     KC_LCBR,        KC_RCBR,        KC_PIPE,        KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_DQUO,        KC_QUOTE,       KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
 
-               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,      KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                RGB_TOG,        RGB_SLD,
                KC_TRANSPARENT,
                KC_TRANSPARENT, RGB_HUD,        RGB_HUI),
