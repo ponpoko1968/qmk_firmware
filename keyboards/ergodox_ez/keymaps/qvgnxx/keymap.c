@@ -49,28 +49,28 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [0] = KEYMAP(
                /* 左手 */
-               KC_ESCAPE,         KC_1, KC_2, KC_3, KC_4, KC_5,                 KC_DELETE,
-               KC_TAB,            KC_Q, KC_W, KC_E, KC_R, KC_T,                 LT(1,      KC_NO),
-               LCTL(KC_RBRACKET), KC_A, KC_S, KC_D, KC_F, MT(MOD_LCTL|MOD_LGUI, KC_G),
-               KC_LSHIFT,         KC_Z, KC_X, KC_C, KC_V, KC_B,                 LT(2,      KC_NO),
+               KC_ESCAPE,         KC_1, KC_2, KC_3, KC_4, KC_5, KC_DELETE,
+               KC_TAB,            KC_Q, KC_W, KC_E, KC_R, KC_T, KC_NO,
+               LCTL(KC_RBRACKET), KC_A, KC_S, KC_D, KC_F, KC_G,
+               KC_LSHIFT,         KC_Z, KC_X, KC_C, KC_V, KC_B, KC_NO,
 
-               KC_LCTL, KC_TRNS,   KC_TRNS,   KC_LALT, KC_LGUI,
+               KC_LCTL, KC_NO,   KC_NO,   KC_LALT, KC_LGUI,
 
-               KC_LEFT, KC_RIGHT,
+               KC_HOME,        KC_END,
                KC_PGUP,
                KC_LCTL, KC_LSHIFT, KC_PGDOWN,
 
                /* 右手 */
-               LCTL(KC_RBRACKET), KC_6, KC_7, KC_8,     KC_9,      KC_0,     KC_BSPACE,
-               TG(1),             KC_Y, KC_U, KC_I,     KC_O,      KC_P,     KC_MINUS,
-               KC_H,              KC_J, KC_K, KC_L,     KC_SCOLON, KC_ENTER,
-               TG(2),             KC_N, KC_M, KC_COMMA, KC_DOT,    KC_SLASH, KC_RSHIFT,
+               KC_F1, KC_6, KC_7, KC_8,     KC_9,      KC_0,     KC_BSPACE,
+               KC_NO, KC_Y, KC_U, KC_I,     KC_O,      KC_P,     KC_NO,
+               KC_H,  KC_J, KC_K, KC_L,     KC_SCOLON, KC_ENTER,
+               KC_NO, KC_N, KC_M, KC_COMMA, KC_DOT,    KC_SLASH, KC_RSHIFT,
 
-               KC_RSHIFT,      KC_LCTL,  KC_UP,     KC_DOWN,   TG(3),
+               KC_RSHIFT,      KC_UP,  KC_DOWN, TG(1),    TG(2),
 
-               KC_HOME,        KC_END,
-               KC_LANG2,
-               LGUI(KC_SPACE),         LT(1,     KC_NO),   LT(1,KC_SPACE)  ),
+               KC_LEFT, KC_RIGHT,
+               KC_NO,
+               LGUI(KC_SPACE), KC_LCTL,  LT(1,     KC_SPACE)  ),
 
 /* layer0
  *
@@ -145,7 +145,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                KC_TRANSPARENT,
                KC_TRANSPARENT, KC_TRANSPARENT, KC_SPACE),
 
-
+  /*
   [3] = KEYMAP(KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
                KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
                KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT,
@@ -166,7 +166,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                KC_TRANSPARENT,KC_TRANSPARENT,
                KC_TRANSPARENT,
                KC_TRANSPARENT,KC_TRANSPARENT,KC_TRANSPARENT),
-
+  */
 
 };
 
@@ -272,14 +272,14 @@ uint32_t layer_state_set_user(uint32_t state) {
 #endif
         break;
       case 1:
-        ergodox_right_led_1_on();
+        //ergodox_right_led_1_on();
         #ifdef RGBLIGHT_COLOR_LAYER_1
           rgblight_setrgb(RGBLIGHT_COLOR_LAYER_1);
         #endif
 #ifdef RGBLIGHT_ENABLE
           rgblight_enable();
           rgblight_mode(1);
-          rgblight_setrgb(0xff,0x00,0x00);
+          rgblight_setrgb(0x00,0x00,0xff);
 #endif
         break;
       case 2:
