@@ -98,12 +98,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   [1] = KEYMAP(
                /* 左手 */
-               KC_TRANSPARENT, LSFT(KC_1),     LSFT(KC_2), LSFT(KC_3)/*#*/, LSFT(KC_4)/*$*/, LSFT(KC_5)/*%*/, RESET,
-               KC_TRANSPARENT, KC_TRANSPARENT, KC_7,       KC_8,            KC_9,            KC_TILD,         KC_TRANSPARENT,
-               KC_TRANSPARENT, KC_TRANSPARENT, KC_4,       KC_5,            KC_6,            KC_KP_ASTERISK,
-               KC_TRANSPARENT, KC_TRANSPARENT, KC_1,       KC_2,            KC_3,            KC_GRAVE,        KC_TRANSPARENT,
+               KC_TRANSPARENT, LSFT(KC_1), LSFT(KC_2), LSFT(KC_3)/*#*/, LSFT(KC_4)/*$*/, LSFT(KC_5)/*%*/, RESET,
+               KC_TRANSPARENT, KC_7,       KC_8,       KC_9,            KC_MINUS,        KC_TILD,         KC_TRANSPARENT,
+               KC_BSPACE,      KC_4,       KC_5,       KC_6,            KC_KP_PLUS,      KC_KP_ASTERISK,
+               KC_TRANSPARENT, KC_1,       KC_2,       KC_3,            KC_EQUAL,        KC_GRAVE,        KC_SLASH,
 
-               KC_TRANSPARENT, KC_TRANSPARENT, KC_0, KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_0, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                RGB_MOD,        RGB_FF0000,
                RGB_0000FF,
                KC_TRANSPARENT, KC_TRANSPARENT, RGB_800080,
