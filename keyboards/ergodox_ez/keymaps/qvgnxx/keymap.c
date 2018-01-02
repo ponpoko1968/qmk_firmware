@@ -112,7 +112,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                KC_TRANSPARENT, LSFT(KC_6),          LSFT(KC_7),          LSFT(KC_8),          LSFT(KC_9),          LSFT(KC_0),         KC_F1,
                KC_TRANSPARENT, KC_MINUS,       KC_EQUAL,       KC_LBRACKET,    KC_RBRACKET,    KC_BSLASH,      KC_F12,
                                KC_UNDS,        KC_KP_PLUS,     KC_LCBR,        KC_RCBR,        KC_PIPE,        KC_TRANSPARENT,
-               KC_TRANSPARENT, KC_DQUO,        KC_QUOTE,       KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_QUOTE,       KC_DQUO,       KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
 
                KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
                RGB_TOG,        RGB_SLD,
