@@ -58,7 +58,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
                KC_HOME,        KC_END,
                KC_PGUP,
-               KC_LCTL, KC_LSHIFT, KC_PGDOWN,
+               LT(2,     KC_SPACE), KC_LSHIFT, KC_PGDOWN,
 
                /* 右手 */
                KC_F1, KC_6, KC_7, KC_8,     KC_9,      KC_0,     KC_BSPACE,
@@ -70,7 +70,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
                KC_LEFT, KC_RIGHT,
                KC_NO,
-               KC_LCTL,  LGUI(KC_SPACE),   LT(1,     KC_SPACE)  ),
+               LGUI(KC_SPACE),  KC_LCTL,     LT(1,     KC_SPACE)  ), /* ime切り替え、右CTRL、スペース（長押しでL1） */
 
 /* layer0
  *
@@ -103,7 +103,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                KC_BSPACE,      KC_KP_PLUS, KC_4,       KC_5,       KC_6,                  KC_KP_ASTERISK,
                KC_TRANSPARENT, KC_EQUAL,   KC_1,       KC_2,       KC_3,                  KC_GRAVE,        KC_SLASH,
 
-               KC_TRANSPARENT, KC_TRANSPARENT, KC_0,  KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_DOT, KC_0,
                RGB_MOD,        RGB_FF0000,
                RGB_0000FF,
                KC_TRANSPARENT, KC_TRANSPARENT, RGB_800080,
@@ -119,8 +119,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                KC_TRANSPARENT,
                KC_TRANSPARENT, RGB_HUD,        RGB_HUI),
 
-  /* 親指シフト練習ソフト用
-     右手のスペースキーをaltキー
+  /* テンキー
    */
   [2] = KEYMAP(
                /* 左手 */
@@ -135,13 +134,12 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                KC_TRANSPARENT,        KC_TRANSPARENT, KC_TRANSPARENT,
 
                /* 右手 */
-               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-                               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
-               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_TRANSPARENT,  KC_TRANSPARENT,  KC_TRANSPARENT,  KC_SLASH,  LSFT(KC_8),  KC_TRANSPARENT,  KC_BSPACE,
+               KC_HOME,  KC_TRANSPARENT,  KC_7,            KC_8,      KC_9,        KC_MINUS,        KC_TRANSPARENT,
+                                KC_PGUP,  KC_4,            KC_5,      KC_6,        KC_KP_PLUS,      KC_ENTER,
+               KC_END,  KC_PGDOWN,  KC_1,            KC_2,      KC_3,        KC_TRANSPARENT,  KC_TRANSPARENT,
 
-
-               KC_TRANSPARENT, KC_TRANSPARENT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT,
+               KC_0, KC_DOT, KC_TRANSPARENT,  KC_TRANSPARENT, KC_TRANSPARENT,
 
                KC_TRANSPARENT, KC_TRANSPARENT,
                KC_TRANSPARENT,
