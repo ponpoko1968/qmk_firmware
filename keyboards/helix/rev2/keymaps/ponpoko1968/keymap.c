@@ -389,22 +389,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       if (record->event.pressed) {
         //not sure how to have keyboard check mode and set it to a variable, so my work around
         //uses another variable that would be set to true after the first time a reactive key is pressed.
-        if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
-        } else {
-          TOG_STATUS = !TOG_STATUS;
-          #ifdef RGBLIGHT_ENABLE
-            //rgblight_mode(RGBLIGHT_MODE_SNAKE);
-          #endif
-        }
+        /* if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false */
+        /* } else { */
+        /*   TOG_STATUS = !TOG_STATUS; */
+        /*   #ifdef RGBLIGHT_ENABLE */
+        /*     //rgblight_mode(RGBLIGHT_MODE_SNAKE); */
+        /*   #endif */
+        /* } */
         layer_on(_RAISE);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+        /* update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST); */
       } else {
         #ifdef RGBLIGHT_ENABLE
           //rgblight_mode(RGB_current_mode);  // revert RGB to initial mode prior to RGB mode change
         #endif
         layer_off(_RAISE);
         TOG_STATUS = false;
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+        /* update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST); */
       }
       return false;
       break;
