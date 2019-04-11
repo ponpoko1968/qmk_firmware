@@ -40,10 +40,14 @@ enum custom_keycodes {
   BACKLIT,
   EISU,
   KANA,
-  RGBRST
+  RGBRST,
+  OYAYUBI
 };
 
  /* https://github.com/nishio/qmk_firmware/blob/thumb_shift/keyboards/ergodox/keymaps/thumb_shift/keymap.c */
+
+bool isOyayubiPressed   = false;
+
 bool isLeftShiftPressed = false;
 bool isRightShiftPressed = false;
 
@@ -77,7 +81,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_TAB             ,  KC_Q   ,    KC_W  ,    KC_E ,    KC_R  ,    KC_T   ,   /* dummy , dummy          , */  KC_Y ,    KC_U   ,    KC_I    ,    KC_O ,    KC_P    , KC_BSPC  , \
                      LCTL(KC_RBRACKET)  ,  KC_A   ,    KC_S  ,    KC_D ,    KC_F,      KC_G ,   /* dummy , dummy          , */    KC_H ,    KC_J   ,    KC_K    ,    KC_L ,LCTL_T(KC_SCLN) , KC_ENT  , \
                      KC_LSFT            ,  KC_Z   ,    KC_X  ,    KC_C ,    KC_V  ,    KC_B   ,     KC_INS  ,KC_F1,               KC_N ,    KC_M   ,    KC_COMM , KC_DOT  ,    KC_SLSH , KC_RSFT , \
-                     KC_LCTL            ,  ADJUST ,    LOWER ,    RAISE,  KC_LALT , KC_LGUI,     LOWER  , LGUI(KC_SPACE),     LT(_RAISE,KC_SPACE),      TG(_OYA),    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
+                     KC_LCTL            ,  ADJUST ,    LOWER ,    RAISE,  KC_LALT , KC_LGUI,     LOWER  , LGUI(KC_SPACE),     LT(_RAISE,KC_SPACE),      OYAYUBI ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
                       ),
 
   /* Lower
@@ -122,7 +126,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     _______ , _______  , TO(_QWERTY) , TO(_QWERTY) , KC_0    ,   _______ ,  KC_PGDN,_______,  _______ , _______ , _______   , _______   , _______ ,    _______ \
       ),
 
-  /*
+#if 0
 
     qmk_firmware/keymap.c at thumb_shift · nishio/qmk_firmware
     https://github.com/nishio/qmk_firmware/blob/thumb_shift/keyboards/ergodox/keymaps/thumb_shift/keymap.c
@@ -151,7 +155,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_NO,
   KC_NO, KC_ENTER, M(101)
   ),
-   */
+#endif
 
   /* 親指シフト（ベース）
    * ,-----------------------------------------.             ,-----------------------------------------.
@@ -523,6 +527,28 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       unregister_code(KC_LANG1);
     }
     return false;
+    break;
+  case OYAYUBI:
+    if (record->event.pressed) {
+      if (isOyayubiPressed){
+        SEND_STRING(SS_LGUI(" "));
+        /* if(keymap_config.swap_lalt_lgui==false){ */
+        /*   register_code(KC_LANG2); */
+        /* }else{ */
+        /*   SEND_STRING(SS_LALT("`")); */
+        /* } */
+        layer_off(_OYA);
+      }else{
+        /* if(keymap_config.swap_lalt_lgui==false){ */
+        /*   register_code(KC_LANG1); */
+        /* }else{ */
+        /*   SEND_STRING(SS_LALT("`")); */
+        /* } */
+        SEND_STRING(SS_LGUI(" "));
+        layer_on(_OYA);
+      }
+      isOyayubiPressed = !isOyayubiPressed;
+    }
     break;
   case RGBRST:
 #ifdef RGBLIGHT_ENABLE
