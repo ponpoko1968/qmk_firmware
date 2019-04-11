@@ -28,7 +28,10 @@ enum layer_number {
     _QWERTY = 0,
     _LOWER,                     /* 1 */
     _RAISE,                     /* 2 */
-    _ADJUST
+    _OYA,                       /* 3 */
+    _OYA_RIGHT,                 /* 4 */
+    _OYA_LEFT,                  /* 5 */
+    _ADJUST                     /* 6 */
 };
 
 enum custom_keycodes {
@@ -39,7 +42,10 @@ enum custom_keycodes {
   BACKLIT,
   EISU,
   KANA,
-  RGBRST
+  RGBRST,
+  OYA,
+  OYA_RIGHT,
+  OYA_LEFT,
 };
 
 enum macro_keycodes {
@@ -62,45 +68,45 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
    * | Shift|   Z  |   X  |   C  |   V  |   B  |  INS |   ]  |   N  |   M  |   ,  |   .  |   /  |Enter |
    * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
-   * |Adjust| Esc   | Alt  | Alt  | CMD |Lower |Space |Space |Raise | KANA | Left | Down |  Up  |Right |
+   * | Ctrl |Adjust| Lower|Raise |  Alt |  Cmd |Lower |KANA  |Raise |to_OYA| Left | Down |  Up  |Right |
    * `-------------------------------------------------------------------------------------------------'
    */
   [_QWERTY] = LAYOUT( \
-                     KC_ESC            ,  KC_1   ,    KC_2  ,    KC_3 ,    KC_4  ,    KC_5   ,   /* dummy , dummy          , */  KC_6 ,    KC_7   ,    KC_8    ,    KC_9 ,    KC_0    , KC_DEL , \
-                     KC_TAB            ,  KC_Q   ,    KC_W  ,    KC_E ,    KC_R  ,    KC_T   ,   /* dummy , dummy          , */  KC_Y ,    KC_U   ,    KC_I    ,    KC_O ,    KC_P    , KC_BSPC  , \
-                     LCTL(KC_RBRACKET) ,  KC_A   ,    KC_S  ,    KC_D ,    KC_F  ,    KC_G   ,   /* dummy , dummy          , */  KC_H ,    KC_J   ,    KC_K    ,    KC_L ,    KC_SCLN , KC_ENT  , \
-                     KC_LSFT           ,  KC_Z   ,    KC_X  ,    KC_C ,    KC_V  ,    KC_B   ,   KC_INS  , KC_F1        ,     KC_N ,    KC_M   ,    KC_COMM , KC_DOT  ,    KC_SLSH , KC_RSFT , \
-                     KC_LCTL           ,  ADJUST ,  KC_LALT , KC_LALT ,  KC_LALT ,    KC_LGUI,   LOWER    , LGUI(KC_SPACE) ,     LT(_RAISE,KC_SPACE), RAISE  ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
+                     KC_ESC             ,  KC_1   ,    KC_2  ,    KC_3 ,    KC_4  ,    KC_5   ,   /* dummy , dummy          , */  KC_6 ,    KC_7   ,    KC_8    ,    KC_9 ,    KC_0    , KC_DEL , \
+                     KC_TAB             ,  KC_Q   ,    KC_W  ,    KC_E ,    KC_R  ,    KC_T   ,   /* dummy , dummy          , */  KC_Y ,    KC_U   ,    KC_I    ,    KC_O ,    KC_P    , KC_BSPC  , \
+                     LCTL(KC_RBRACKET)  ,  KC_A   ,    KC_S  ,    KC_D ,    KC_F,      KC_G ,   /* dummy , dummy          , */    KC_H ,    KC_J   ,    KC_K    ,    KC_L ,LCTL_T(KC_SCLN) , KC_ENT  , \
+                     KC_LSFT            ,  KC_Z   ,    KC_X  ,    KC_C ,    KC_V  ,    KC_B   ,     KC_INS  ,KC_F1,               KC_N ,    KC_M   ,    KC_COMM , KC_DOT  ,    KC_SLSH , KC_RSFT , \
+                     KC_LCTL            ,  ADJUST ,    LOWER ,    RAISE,  KC_LALT , KC_LGUI,     LOWER  , LGUI(KC_SPACE),     LT(_RAISE,KC_SPACE),      TG(_OYA),    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
                       ),
 
   /* Lower
    * ,-----------------------------------------.             ,-----------------------------------------.
    * |      |   F1 |  F2  | f3   |  f4  | f5   |             |   f6 |  f7  |  f8  |  f9  | f10  | f11  |
    * |------+------+------+------+------+------|             |------+------+------+------+------+------|
-   * |   ~  |   !  |   @  |   #  |   $  |   %  |             |   ^  |   &  |   *  |   (  |   )  |      |
+   * |      |      |      |      |      |      |             |   /  |   7  |   8  |  9   |  -   | F12  |
    * |------+------+------+------+------+------|             |------+------+------+------+------+------|
-   * |      |  F1  |  F2  |  F3  |  F4  |  F5  |             |  F6  |   _  |   +  |   {  |   }  |  |   |
+   * |      |      |      |      |      |      |             |   *  |   4  |   5  |  6   |  +   |      |
    * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
-   * |      |  F7  |  F8  |  F9  |  F10 |  F11 |  (   |   )  |  F12 |      |      | Home | End  |      |
+   * |      |      |      |      |      |      |      |      |      |   1  |   2  |  3   |  =   |      |
    * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
-   * |      |      |      |      |      |      |      |      |      |      | Next | Vol- | Vol+ | Play |
+   * |      |      |      |      |      |      |      |      |      |   0  |      |  .   |      |      |
    * `-------------------------------------------------------------------------------------------------'
    */
   [_LOWER] = LAYOUT( \
-                    _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                     KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10,    KC_F11, \
-                    KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, KC_F12, \
-      _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                     KC_F6,   KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE, \
-      _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_LPRN, KC_RPRN, KC_F12,  _______, _______, KC_HOME, KC_END,  _______, \
-      _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_MNXT, KC_VOLD, KC_VOLU, KC_MPLY \
+                    _______ , KC_F1   ,   KC_F2    ,   KC_F3    ,   KC_F4 ,   KC_F5 ,                        KC_F6 ,   KC_F7    ,  KC_F8 ,   KC_F9 ,   KC_F10 ,    KC_F11 , \
+                    _______ , _______ , _______    , _______    , _______ , _______ ,                        KC_SLSH , KC_7       ,KC_8    , KC_9    , KC_MINUS ,  KC_F12   , \
+                    _______ , _______ , _______    , _______    , _______ , _______ ,                        KC_ASTR , KC_4       ,KC_5    , KC_6    , KC_PLUS  ,   _______ , \
+                    _______ , _______ , _______    , _______    , _______ , _______ , _______ ,    _______ , _______ , KC_1    ,   KC_2     ,KC_3      , KC_EQL  ,    _______ , \
+                    _______ , _______ ,TO(_QWERTY) ,TO(_QWERTY) , _______ , _______ , _______ ,    _______ , _______ , KC_0    ,   _______,  KC_DOT   , _______ , _______ \
       ),
 
   /* Raise
    * ,-----------------------------------------.             ,-----------------------------------------.
    * |   ~  |   !  |   @  |   #  |   $  |   %  |             |   ^  |   &  |   *  |   (  |   )  |      |
    * |------+------+------+------+------+------|             |------+------+------+------+------+------|
-   * | f11  |      |  7   |  8   |  0   |  ~   |             |  -   |   =  |   [  |  ]   |   \  | f12  |
+   * |      |      |  7   |  8   |  0   |  ~   |             |  -   |   =  |   [  |  ]   |   \  | f12  |
    * |------+------+------+------+------+------|             |------+------+------+------+------+------|
-   * | f12  |      |  4   |  5   |  6   |      |             |  _   |   -  |   {  | }    |   |  |      |
+   * |      |      |  4   |  5   |  6   |      |             |  _   |   -  |   {  | }    |   |  |      |
    * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
    * |      |      |  1   |  2   |  3   |  `   |      |      |  '   |   "  |      |      |      |      |
    * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
@@ -108,12 +114,74 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
    * `-------------------------------------------------------------------------------------------------'
    */
   [_RAISE] = LAYOUT( \
-                    KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, _______, \
-                    _______,  _______, KC_7 ,   KC_8,   KC_9,  KC_TILDE,                    KC_MINS, KC_EQL,  KC_LBRC, KC_RBRC, KC_BSLASH, KC_F12, \
-                    _______, KC_HOME ,KC_4 ,   KC_5,    KC_6,  _______,                     KC_UNDS, KC_PLUS, KC_LCBR, KC_RCBR, KC_PIPE,   _______, \
-                    _______, KC_END,  KC_1 ,   KC_2,    KC_4,  KC_GRAVE,  KC_PGUP, _______,  KC_QUOT, KC_DQT,  _______, _______, _______,    _______, \
-                    _______, _______, _______, _______, KC_0,   _______,  KC_PGDN, _______,  _______, _______, _______, _______, _______,    _______ \
+                    KC_TILD , KC_EXLM  , KC_AT       ,   KC_HASH   , KC_DLR  ,  KC_PERC  ,                    KC_CIRC   , KC_AMPR , KC_ASTR  , KC_LPRN , KC_RPRN   , _______   , \
+                    _______ ,  KC_HOME, KC_UP        ,   KC_8      ,   KC_9  ,  KC_TILDE ,                    KC_MINS  ,  KC_EQL  , KC_LBRC ,  KC_RBRC , KC_BSLASH , KC_F12    , \
+                    _______ , KC_LEFT  ,KC_DOWN      ,   KC_RIGHT      ,    KC_6 ,  _______  ,                    KC_UNDS ,   KC_PLUS , KC_LCBR  , KC_RCBR , KC_PIPE   ,   _______ , \
+                    _______ , KC_END   ,  KC_1       ,   KC_2      ,    KC_3 ,  KC_GRAVE ,  KC_PGUP,_______,  KC_QUOT ,   KC_DQT  ,  _______  , _______   , _______ ,    _______ , \
+                    _______ , _______  , TO(_QWERTY) , TO(_QWERTY) , KC_0    ,   _______ ,  KC_PGDN,_______,  _______ , _______ , _______   , _______   , _______ ,    _______ \
       ),
+
+  /* 親指シフト（ベース）
+   * ,-----------------------------------------.             ,-----------------------------------------.
+   * |      |      |      |      |      |      |             |      |      |      |      |      |      |
+   * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+   * |      |      |      |      |      |      |             |      |      |      |      |      |      |
+   * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+   * |      |      |      |      |      |      |             |      |      |      |      |      |      |
+   * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
+   * |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+   * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
+   * |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+   * `-------------------------------------------------------------------------------------------------'
+   */
+  [_OYA] =  LAYOUT( \
+                   _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,                               _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                   _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,                               _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                   _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,                               _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                   _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,   _______ ,   _______ ,       _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                   _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,MO(_OYA_LEFT), MO(_OYA_RIGHT), _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______  \
+                       ),
+  /* 親指シフト（右）
+   * ,-----------------------------------------.             ,-----------------------------------------.
+   * |      |      |      |      |      |      |             |      |      |      |      |      |      |
+   * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+   * |      |      |      |      |      |      |             |      |      |      |      |      |      |
+   * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+   * |      |      |      |      |      |      |             |      |      |      |      |      |      |
+   * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
+   * |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+   * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
+   * |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+   * `-------------------------------------------------------------------------------------------------'
+   */
+  [_OYA_RIGHT] =  LAYOUT( \
+                         _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,                               _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                         _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,                               _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                         _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,                               _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                         _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,   _______ ,   _______ ,       _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                         _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,   _______ ,   _______ ,       _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______  \
+                       ),
+  /* 親指シフト（左）
+   * ,-----------------------------------------.             ,-----------------------------------------.
+   * |      |      |      |      |      |      |             |      |      |      |      |      |      |
+   * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+   * |      |      |      |      |      |      |             |      |      |      |      |      |      |
+   * |------+------+------+------+------+------|             |------+------+------+------+------+------|
+   * |      |      |      |      |      |      |             |      |      |      |      |      |      |
+   * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
+   * |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+   * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
+   * |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+   * `-------------------------------------------------------------------------------------------------'
+   */
+  [_OYA_LEFT] =  LAYOUT( \
+                        _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,                               _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                        _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,                               _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                        _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,                               _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                        _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,   _______ ,   _______ ,       _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______ , \
+                        _______ ,   _______ ,   _______ ,   _______ , _______ ,   _______ ,   _______ ,   _______ ,       _______ ,   _______ ,   _______ ,   _______ ,  _______ ,  _______  \
+                       ),
+
 
   /* Adjust (Lower + Raise)
    * ,-----------------------------------------.             ,-----------------------------------------.
@@ -175,113 +243,141 @@ void update_tri_layer_RGB(uint8_t layer1, uint8_t layer2, uint8_t layer3) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case QWERTY:
-      if (record->event.pressed) {
-        #ifdef AUDIO_ENABLE
-          PLAY_SONG(tone_qwerty);
-        #endif
-        persistent_default_layer_set(1UL<<_QWERTY);
-      }
-      return false;
-      break;
-    case LOWER:
-      if (record->event.pressed) {
-          //not sure how to have keyboard check mode and set it to a variable, so my work around
-          //uses another variable that would be set to true after the first time a reactive key is pressed.
-        if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
-        } else {
-          TOG_STATUS = !TOG_STATUS;
-          #ifdef RGBLIGHT_ENABLE
-            //rgblight_mode(RGBLIGHT_MODE_SNAKE + 1);
-          #endif
-        }
-        layer_on(_LOWER);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+  case QWERTY:
+    if (record->event.pressed) {
+#ifdef AUDIO_ENABLE
+      PLAY_SONG(tone_qwerty);
+#endif
+      persistent_default_layer_set(1UL<<_QWERTY);
+    }
+    return false;
+    break;
+  case LOWER:
+    if (record->event.pressed) {
+      //not sure how to have keyboard check mode and set it to a variable, so my work around
+      //uses another variable that would be set to true after the first time a reactive key is pressed.
+      if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
       } else {
-        #ifdef RGBLIGHT_ENABLE
-          //rgblight_mode(RGB_current_mode);   // revert RGB to initial mode prior to RGB mode change
-        #endif
-        TOG_STATUS = false;
-        layer_off(_LOWER);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+        TOG_STATUS = !TOG_STATUS;
+#ifdef RGBLIGHT_ENABLE
+        //rgblight_mode(RGBLIGHT_MODE_SNAKE + 1);
+#endif
       }
-      return false;
-      break;
-    case RAISE:
-      if (record->event.pressed) {
-        //not sure how to have keyboard check mode and set it to a variable, so my work around
-        //uses another variable that would be set to true after the first time a reactive key is pressed.
-        /* if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false */
-        /* } else { */
-        /*   TOG_STATUS = !TOG_STATUS; */
-        /*   #ifdef RGBLIGHT_ENABLE */
-        /*     //rgblight_mode(RGBLIGHT_MODE_SNAKE); */
-        /*   #endif */
-        /* } */
-        layer_on(_RAISE);
-        /* update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST); */
-      } else {
-        #ifdef RGBLIGHT_ENABLE
-          //rgblight_mode(RGB_current_mode);  // revert RGB to initial mode prior to RGB mode change
-        #endif
-        layer_off(_RAISE);
-        TOG_STATUS = false;
-        /* update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST); */
+      layer_on(_LOWER);
+      update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    } else {
+#ifdef RGBLIGHT_ENABLE
+      //rgblight_mode(RGB_current_mode);   // revert RGB to initial mode prior to RGB mode change
+#endif
+      TOG_STATUS = false;
+      layer_off(_LOWER);
+      update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    }
+    return false;
+    break;
+
+
+  case RAISE:
+    if (record->event.pressed) {
+      //not sure how to have keyboard check mode and set it to a variable, so my work around
+      //uses another variable that would be set to true after the first time a reactive key is pressed.
+      /* if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false */
+      /* } else { */
+      /*   TOG_STATUS = !TOG_STATUS; */
+      /*   #ifdef RGBLIGHT_ENABLE */
+      /*     //rgblight_mode(RGBLIGHT_MODE_SNAKE); */
+      /*   #endif */
+      /* } */
+      layer_on(_RAISE);
+      /* update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST); */
+    } else {
+#ifdef RGBLIGHT_ENABLE
+      //rgblight_mode(RGB_current_mode);  // revert RGB to initial mode prior to RGB mode change
+#endif
+      layer_off(_RAISE);
+      TOG_STATUS = false;
+      /* update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST); */
+    }
+    return false;
+    break;
+
+   case OYA:
+    if (record->event.pressed) {
+      persistent_default_layer_set(1UL<<_OYA);
+    }
+    return false;
+    break;
+
+  case OYA_RIGHT:
+    if (record->event.pressed) {
+      layer_on(_OYA_RIGHT);
+    } else {
+      layer_off(_OYA_RIGHT);
+    }
+    return false;
+    break;
+
+  case OYA_LEFT:
+    if (record->event.pressed) {
+      layer_on(_OYA_LEFT);
+    } else {
+      layer_off(_OYA_LEFT);
+    }
+    return false;
+    break;
+
+  case ADJUST:
+    if (record->event.pressed) {
+      layer_on(_ADJUST);
+    } else {
+      layer_off(_ADJUST);
+    }
+    return false;
+    break;
+    //led operations - RGB mode change now updates the RGB_current_mode to allow the right RGB mode to be set after reactive keys are released
+  case RGB_MOD:
+#ifdef RGBLIGHT_ENABLE
+    if (record->event.pressed) {
+      rgblight_mode(RGB_current_mode);
+      rgblight_step();
+      RGB_current_mode = rgblight_config.mode;
+    }
+#endif
+    return false;
+    break;
+  case EISU:
+    if (record->event.pressed) {
+      if(keymap_config.swap_lalt_lgui==false){
+        register_code(KC_LANG2);
+      }else{
+        SEND_STRING(SS_LALT("`"));
       }
-      return false;
-      break;
-    case ADJUST:
-        if (record->event.pressed) {
-          layer_on(_ADJUST);
-        } else {
-          layer_off(_ADJUST);
-        }
-        return false;
-        break;
-      //led operations - RGB mode change now updates the RGB_current_mode to allow the right RGB mode to be set after reactive keys are released
-    case RGB_MOD:
-      #ifdef RGBLIGHT_ENABLE
-        if (record->event.pressed) {
-          rgblight_mode(RGB_current_mode);
-          rgblight_step();
-          RGB_current_mode = rgblight_config.mode;
-        }
-      #endif
-      return false;
-      break;
-    case EISU:
-      if (record->event.pressed) {
-        if(keymap_config.swap_lalt_lgui==false){
-          register_code(KC_LANG2);
-        }else{
-          SEND_STRING(SS_LALT("`"));
-        }
-      } else {
-        unregister_code(KC_LANG2);
+    } else {
+      unregister_code(KC_LANG2);
+    }
+    return false;
+    break;
+  case KANA:
+    if (record->event.pressed) {
+      if(keymap_config.swap_lalt_lgui==false){
+        register_code(KC_LANG1);
+      }else{
+        SEND_STRING(SS_LALT("`"));
       }
-      return false;
-      break;
-    case KANA:
-      if (record->event.pressed) {
-        if(keymap_config.swap_lalt_lgui==false){
-          register_code(KC_LANG1);
-        }else{
-          SEND_STRING(SS_LALT("`"));
-        }
-      } else {
-        unregister_code(KC_LANG1);
-      }
-      return false;
-      break;
-    case RGBRST:
-      #ifdef RGBLIGHT_ENABLE
-        if (record->event.pressed) {
-          eeconfig_update_rgblight_default();
-          rgblight_enable();
-          RGB_current_mode = rgblight_config.mode;
-        }
-      #endif
-      break;
+    } else {
+      unregister_code(KC_LANG1);
+    }
+    return false;
+    break;
+  case RGBRST:
+#ifdef RGBLIGHT_ENABLE
+    if (record->event.pressed) {
+      eeconfig_update_rgblight_default();
+      rgblight_enable();
+      RGB_current_mode = rgblight_config.mode;
+    }
+#endif
+    break;
   }
   return true;
 }
@@ -345,6 +441,9 @@ void matrix_update(struct CharacterMatrix *dest,
 #define L_BASE 0
 #define L_LOWER (1<<_LOWER)
 #define L_RAISE (1<<_RAISE)
+#define L_OYA (1<<_OYA)
+#define L_OYA_RIGHT ((1<<_OYA_RIGHT) + (1<<_OYA))
+#define L_OYA_LEFT ((1<<_OYA_LEFT) + (1<<_OYA))
 #define L_ADJUST (1<<_ADJUST)
 #define L_ADJUST_TRI (L_ADJUST|L_RAISE|L_LOWER)
 
@@ -379,30 +478,39 @@ void render_status(struct CharacterMatrix *matrix) {
   char buf[40];
   snprintf(buf,sizeof(buf), "Undef-%ld", layer_state);
   matrix_write_P(matrix, PSTR("\nLayer: "));
-    switch (layer_state) {
-        case L_BASE:
-           matrix_write_P(matrix, PSTR("Default"));
-           break;
-        case L_RAISE:
-           matrix_write_P(matrix, PSTR("Raise"));
-           break;
-        case L_LOWER:
-           matrix_write_P(matrix, PSTR("Lower"));
-           break;
-        case L_ADJUST:
-        case L_ADJUST_TRI:
-           matrix_write_P(matrix, PSTR("Adjust"));
-           break;
-        default:
-           matrix_write(matrix, buf);
-    }
+  switch (layer_state) {
+  case L_BASE:
+    matrix_write_P(matrix, PSTR("Default"));
+    break;
+  case L_RAISE:
+    matrix_write_P(matrix, PSTR("Raise"));
+    break;
+  case L_LOWER:
+    matrix_write_P(matrix, PSTR("Lower"));
+    break;
+  case L_ADJUST:
+  case L_ADJUST_TRI:
+    matrix_write_P(matrix, PSTR("Adjust"));
+    break;
+  case L_OYA:
+    matrix_write_P(matrix, PSTR("OYA"));
+    break;
+  case L_OYA_LEFT:
+    matrix_write_P(matrix, PSTR("Left"));
+    break;
+  case L_OYA_RIGHT:
+    matrix_write_P(matrix, PSTR("Right"));
+    break;
+  default:
+    matrix_write(matrix, buf);
+  }
 
   // Host Keyboard LED Status
   char led[40];
-    snprintf(led, sizeof(led), "\n%s  %s  %s",
-            (host_keyboard_leds() & (1<<USB_LED_NUM_LOCK)) ? "NUMLOCK" : "       ",
-            (host_keyboard_leds() & (1<<USB_LED_CAPS_LOCK)) ? "CAPS" : "    ",
-            (host_keyboard_leds() & (1<<USB_LED_SCROLL_LOCK)) ? "SCLK" : "    ");
+  snprintf(led, sizeof(led), "\n%s  %s  %s",
+           (host_keyboard_leds() & (1<<USB_LED_NUM_LOCK)) ? "NUMLOCK" : "       ",
+           (host_keyboard_leds() & (1<<USB_LED_CAPS_LOCK)) ? "CAPS" : "    ",
+           (host_keyboard_leds() & (1<<USB_LED_SCROLL_LOCK)) ? "SCLK" : "    ");
   matrix_write(matrix, led);
 }
 
