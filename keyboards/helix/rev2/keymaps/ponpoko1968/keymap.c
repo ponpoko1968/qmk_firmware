@@ -555,7 +555,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   case OYAYUBI:
     if (record->event.pressed) {
       if (isOyayubiPressed){
-        SEND_STRING(SS_LGUI(" "));
+        //SEND_STRING(SS_LGUI(" "));
+        register_code(KC_LANG2);
         /* if(keymap_config.swap_lalt_lgui==false){ */
         /*   register_code(KC_LANG2); */
         /* }else{ */
@@ -568,10 +569,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         /* }else{ */
         /*   SEND_STRING(SS_LALT("`")); */
         /* } */
-        SEND_STRING(SS_LGUI(" "));
+        register_code(KC_LANG1);
+        //SEND_STRING(SS_LGUI(" "));
         layer_on(_OYA);
       }
       isOyayubiPressed = !isOyayubiPressed;
+    }else{
+      if(isOyayubiPressed){
+        unregister_code(KC_LANG2);
+      }else{
+        unregister_code(KC_LANG1);
+      }
     }
     break;
   case RGBRST:
