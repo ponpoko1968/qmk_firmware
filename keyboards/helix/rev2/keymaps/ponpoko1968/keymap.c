@@ -11,6 +11,29 @@
   #include "ssd1306.h"
 #endif
 
+#include "custom_keycodes.h"
+
+
+
+#define NN_SHIFT_NOT_FOUND -1
+#define KC_M_KANA M_KANA
+#define KC_M_KANA M_KANA
+#define KC_M_EISU M_EISU
+#define KC_M_EISU M_EISU
+
+#define NN_NO_SHIFT 0
+#define NN_SHIFT_MODE_MIDDLE 1
+#define NN_SHIFT_MODE_MEDICINAL (1 << 1)
+
+
+void der_init_variables(void);
+
+int der_find_mapping_on_combinations(void);
+bool der_all_key_released(void);
+void der_update_shift(void);
+bool der_process_nn(uint16_t keycode, keyrecord_t *record);
+
+
 extern keymap_config_t keymap_config;
 
 #ifdef RGBLIGHT_ENABLE
@@ -26,10 +49,18 @@ extern uint8_t is_master;
 // entirely and just use numbers.
 enum layer_number {
     _QWERTY = 0,
-    _LOWER,                     /* 1 */
-    _RAISE,                     /* 2 */
-    _ADJUST
+    _JAPANESE = 2,
+    _LOWER  = 3 ,                     /* 1 */
+    _RAISE  = 4,                     /* 2 */
+    _ADJUST  = 8
 };
+
+/* #define _QWERTY 0 */
+/* #define _LOWER 3 */
+/* #define _RAISE 4 */
+/* #define _JAPANESE 2 */
+/* #define _ADJUST 16 */
+
 
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
@@ -70,7 +101,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_TAB            ,  KC_Q   ,    KC_W  ,    KC_E ,    KC_R  ,    KC_T   ,   /* dummy , dummy          , */  KC_Y ,    KC_U   ,    KC_I    ,    KC_O ,    KC_P    , KC_BSPC  , \
                      LCTL(KC_RBRACKET) ,  KC_A   ,    KC_S  ,    KC_D ,    KC_F  ,    KC_G   ,   /* dummy , dummy          , */  KC_H ,    KC_J   ,    KC_K    ,    KC_L ,    KC_SCLN , KC_ENT  , \
                      KC_LSFT           ,  KC_Z   ,    KC_X  ,    KC_C ,    KC_V  ,    KC_B   ,   KC_INS  , KC_F1        ,     KC_N ,    KC_M   ,    KC_COMM , KC_DOT  ,    KC_SLSH , KC_RSFT , \
-                     KC_LCTL           ,  ADJUST ,  KC_LALT , KC_LALT ,  KC_LALT ,    KC_LGUI,   LOWER    , LGUI(KC_SPACE) ,     LT(_RAISE,KC_SPACE), RAISE  ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
+                     KC_LCTL           ,  ADJUST ,  KC_LALT , KC_LALT ,  KC_LALT ,    KC_LGUI,   LOWER    , LGUI(KC_SPACE) ,     LT(_RAISE,KC_SPACE), TG(_JAPANESE)  ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
                       ),
 
   /* Lower
@@ -114,6 +145,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     _______, KC_END,  KC_1 ,   KC_2,    KC_4,  KC_GRAVE,  KC_PGUP, _______,  KC_QUOT, KC_DQT,  _______, _______, _______,    _______, \
                     _______, _______, _______, _______, KC_0,   _______,  KC_PGDN, _______,  _______, _______, _______, _______, _______,    _______ \
       ),
+
+  [_JAPANESE] = LAYOUT( \
+                     KC_ESC            ,  KC_1   ,    KC_2  ,    KC_3 ,    KC_4  ,    KC_5   ,   /* dummy , dummy          , */  KC_6 ,    KC_7   ,    KC_8    ,    KC_9 ,    KC_0    , KC_DEL , \
+                     KC_TAB            ,  KC_Q   ,    KC_W  ,    KC_E ,    KC_R  ,    KC_T   ,   /* dummy , dummy          , */  KC_Y ,    KC_U   ,    KC_I    ,    KC_O ,    KC_P    , KC_BSPC  , \
+                     LCTL(KC_RBRACKET) ,  KC_A   ,    KC_S  ,    KC_D ,    KC_F  ,    KC_G   ,   /* dummy , dummy          , */  KC_H ,    KC_J   ,    KC_K    ,    KC_L ,    KC_SCLN , KC_ENT  , \
+                     KC_LSFT           ,  KC_Z   ,    KC_X  ,    KC_C ,    KC_V  ,    KC_B   ,   KC_INS  , KC_F1        ,     KC_N ,    KC_M   ,    KC_COMM , KC_DOT  ,    KC_SLSH , KC_RSFT , \
+                     KC_LCTL           ,  ADJUST ,  KC_LALT , KC_LALT ,  KC_LALT ,    KC_LGUI,   LOWER    , LGUI(KC_SPACE) ,     _______, _______  ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
+                      ),
 
   /* Adjust (Lower + Raise)
    * ,-----------------------------------------.             ,-----------------------------------------.
@@ -191,45 +230,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
         } else {
           TOG_STATUS = !TOG_STATUS;
-          #ifdef RGBLIGHT_ENABLE
-            //rgblight_mode(RGBLIGHT_MODE_SNAKE + 1);
-          #endif
         }
         layer_on(_LOWER);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
       } else {
-        #ifdef RGBLIGHT_ENABLE
-          //rgblight_mode(RGB_current_mode);   // revert RGB to initial mode prior to RGB mode change
-        #endif
         TOG_STATUS = false;
         layer_off(_LOWER);
         update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
       }
       return false;
       break;
+
     case RAISE:
       if (record->event.pressed) {
-        //not sure how to have keyboard check mode and set it to a variable, so my work around
-        //uses another variable that would be set to true after the first time a reactive key is pressed.
-        /* if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false */
-        /* } else { */
-        /*   TOG_STATUS = !TOG_STATUS; */
-        /*   #ifdef RGBLIGHT_ENABLE */
-        /*     //rgblight_mode(RGBLIGHT_MODE_SNAKE); */
-        /*   #endif */
-        /* } */
         layer_on(_RAISE);
-        /* update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST); */
       } else {
-        #ifdef RGBLIGHT_ENABLE
-          //rgblight_mode(RGB_current_mode);  // revert RGB to initial mode prior to RGB mode change
-        #endif
         layer_off(_RAISE);
         TOG_STATUS = false;
-        /* update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST); */
       }
       return false;
       break;
+
     case ADJUST:
         if (record->event.pressed) {
           layer_on(_ADJUST);
@@ -238,17 +259,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
         return false;
         break;
-      //led operations - RGB mode change now updates the RGB_current_mode to allow the right RGB mode to be set after reactive keys are released
+
     case RGB_MOD:
-      #ifdef RGBLIGHT_ENABLE
-        if (record->event.pressed) {
-          rgblight_mode(RGB_current_mode);
-          rgblight_step();
-          RGB_current_mode = rgblight_config.mode;
-        }
-      #endif
       return false;
       break;
+
     case EISU:
       if (record->event.pressed) {
         if(keymap_config.swap_lalt_lgui==false){
@@ -261,6 +276,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       }
       return false;
       break;
+
     case KANA:
       if (record->event.pressed) {
         if(keymap_config.swap_lalt_lgui==false){
@@ -274,15 +290,18 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       return false;
       break;
     case RGBRST:
-      #ifdef RGBLIGHT_ENABLE
-        if (record->event.pressed) {
-          eeconfig_update_rgblight_default();
-          rgblight_enable();
-          RGB_current_mode = rgblight_config.mode;
-        }
-      #endif
       break;
   }
+
+  uint8_t layer = biton32(layer_state);
+  switch (layer) {
+  case _JAPANESE:
+    return der_process_nn(keycode, record); break;
+  default:
+    break;
+  }
+
+
   return true;
 }
 
@@ -426,3 +445,531 @@ void iota_gfx_task_user(void) {
 }
 
 #endif
+
+
+/*******
+        Definitions for NAGINATA-STYLE arrays
+ *******/
+/*
+  Implementation memo for hachimitsu-koume layout.
+
+  1. Time-base and pressed only detection
+  2. Time-base and pressed and released detection
+  3. No time-base and pressed and released detection
+
+  If choose 1., this method has one advantage that is more simple 2. . But this method will cause more longer time to show character.
+  If choose 2., this method has detail control between other methods. But this method will be more complex of implementation.
+  If choose 3., this method will need large configuration for layout, But this method implementation will be more simply than other methods.
+ */
+enum der_nn_keys {
+  NN_NO = 0x00,
+  NN_A,
+  NN_B,
+  NN_C,
+  NN_D,
+  NN_E,
+  NN_F,
+  NN_G,
+  NN_H,
+  NN_I,
+  NN_J,
+  NN_K,
+  NN_L,
+  NN_M,               /* 0x10 */
+  NN_N,
+  NN_O,
+  NN_P,
+  NN_Q,
+  NN_R,
+  NN_S,
+  NN_T,
+  NN_U,
+  NN_V,
+  NN_W,
+  NN_X,
+  NN_Y,
+  NN_Z,
+  NN_SCOLON,          /* ; and : */
+  NN_COMMA,           /* , and < */
+  NN_DOT,             /* . and > */
+  NN_SLASH,           /* / and ? */
+  NN_LAST_RANGE,
+};
+
+
+/* variables to implement same-key shift */
+static bool nn_pressed[NN_LAST_RANGE] = {false};
+static uint8_t nn_pressed_keys = 0;
+const static uint8_t nn_max_combination = 3;
+static uint8_t nn_shift_mode = NN_NO_SHIFT;
+static bool nn_shift_continue = false;
+
+/* key sequence mapped keycode what is shifted  */
+typedef struct {
+  uint8_t key_combo[3];
+  uint8_t key_sequence[4];
+} der_nn_key_combination_t;
+
+/* Define keycode and sequence when some key shifted */
+const der_nn_key_combination_t PROGMEM der_nn_key_combinations[] =
+  {
+   /* left hand */
+   /* qwert */
+
+   /* Q */
+   {.key_combo = {NN_Q, NN_NO, NN_NO}, .key_sequence = KS_YO},
+   {.key_combo = {NN_Q, NN_K, NN_NO}, .key_sequence = KS_VU},
+   {.key_combo = {NN_Q, NN_U, NN_NO}, .key_sequence = KS_HYO},
+   {.key_combo = {NN_Q, NN_I, NN_NO}, .key_sequence = KS_HYU},
+   {.key_combo = {NN_Q, NN_O, NN_NO}, .key_sequence = KS_HYA},
+
+   /* W */
+   {.key_combo = {NN_W, NN_NO, NN_NO}, .key_sequence = KS_KU},
+   {.key_combo = {NN_W, NN_L, NN_NO}, .key_sequence = KS_GU},
+   {.key_combo = {NN_W, NN_K, NN_NO}, .key_sequence = KS_O},
+   {.key_combo = {NN_W, NN_U, NN_NO}, .key_sequence = KS_SYO},
+   {.key_combo = {NN_W, NN_I, NN_NO}, .key_sequence = KS_SYU},
+   {.key_combo = {NN_W, NN_O, NN_NO}, .key_sequence = KS_SYA},
+
+  /* E */
+   {.key_combo = {NN_E, NN_NO, NN_NO}, .key_sequence = KS_RU},
+   {.key_combo = {NN_E, NN_K, NN_NO}, .key_sequence = KS_MI},
+   {.key_combo = {NN_E, NN_U, NN_NO}, .key_sequence = KS_TYO},
+   {.key_combo = {NN_E, NN_I, NN_NO}, .key_sequence = KS_TYU},
+   {.key_combo = {NN_E, NN_O, NN_NO}, .key_sequence = KS_TYA},
+
+  /* R */
+   {.key_combo = {NN_R, NN_NO, NN_NO}, .key_sequence = KS_KE},
+   {.key_combo = {NN_R, NN_L, NN_NO}, .key_sequence = KS_GE},
+   {.key_combo = {NN_R, NN_U, NN_NO}, .key_sequence = KS_KYO},
+   {.key_combo = {NN_R, NN_I, NN_NO}, .key_sequence = KS_KYU},
+   {.key_combo = {NN_R, NN_O, NN_NO}, .key_sequence = KS_KYA},
+
+  /* T */
+   {.key_combo = {NN_T, NN_NO, NN_NO}, .key_sequence = {KC_COMM}},
+   {.key_combo = {NN_T, NN_U, NN_NO}, .key_sequence = KS_MYO},
+   {.key_combo = {NN_T, NN_I, NN_NO}, .key_sequence = KS_MYU},
+   {.key_combo = {NN_T, NN_O, NN_NO}, .key_sequence = KS_MYA},
+
+  /* asdfg */
+
+   /* A */
+   {.key_combo = {NN_A, NN_NO, NN_NO}, .key_sequence = KS_NO},
+   {.key_combo = {NN_A, NN_K, NN_NO}, .key_sequence = KS_ME},
+   {.key_combo = {NN_A, NN_U, NN_NO}, .key_sequence = KS_NYO},
+   {.key_combo = {NN_A, NN_I, NN_NO}, .key_sequence = KS_NYU},
+   {.key_combo = {NN_A, NN_O, NN_NO}, .key_sequence = KS_NYA},
+
+   /* S */
+   {.key_combo = {NN_S, NN_NO, NN_NO}, .key_sequence = KS_NA},
+   {.key_combo = {NN_S, NN_K, NN_NO}, .key_sequence = KS_E},
+
+  /* D */
+   {.key_combo = {NN_D, NN_NO, NN_NO}, .key_sequence = KS_TO},
+   {.key_combo = {NN_D, NN_L, NN_NO}, .key_sequence = KS_DO},
+
+
+  /* F */
+   {.key_combo = {NN_F, NN_NO, NN_NO}, .key_sequence = KS_KA},
+   {.key_combo = {NN_F, NN_L, NN_NO}, .key_sequence = KS_GA},
+   {.key_combo = {NN_F, NN_K, NN_NO}, .key_sequence = KS_A},
+
+
+  /* G */
+   {.key_combo = {NN_G, NN_NO, NN_NO}, .key_sequence = KS_XTU},
+   {.key_combo = {NN_G, NN_K, NN_NO}, .key_sequence = KS_YU},
+   {.key_combo = {NN_G, NN_U, NN_NO}, .key_sequence = KS_RYO},
+   {.key_combo = {NN_G, NN_I, NN_NO}, .key_sequence = KS_RYU},
+   {.key_combo = {NN_G, NN_O, NN_NO}, .key_sequence = KS_RYA},
+
+  /* zxcvb */
+
+   /* Z */
+   {.key_combo = {NN_Z, NN_NO, NN_NO}, .key_sequence = KS_SU},
+   {.key_combo = {NN_Z, NN_L, NN_NO}, .key_sequence = KS_ZU},
+   {.key_combo = {NN_Z, NN_K, NN_NO}, .key_sequence = KS_NU},
+   {.key_combo = {NN_Z, NN_U, NN_NO}, .key_sequence = KS_BYO},
+   {.key_combo = {NN_Z, NN_I, NN_NO}, .key_sequence = KS_BYU},
+   {.key_combo = {NN_Z, NN_O, NN_NO}, .key_sequence = KS_BYA},
+
+   /* X */
+   {.key_combo = {NN_X, NN_NO, NN_NO}, .key_sequence = KS_RE},
+   {.key_combo = {NN_X, NN_K, NN_NO}, .key_sequence = KS_MU},
+   {.key_combo = {NN_X, NN_U, NN_NO}, .key_sequence = KS_ZYO},
+   {.key_combo = {NN_X, NN_I, NN_NO}, .key_sequence = KS_ZYU},
+   {.key_combo = {NN_X, NN_O, NN_NO}, .key_sequence = KS_ZYA},
+
+   /* C */
+   {.key_combo = {NN_C, NN_NO, NN_NO}, .key_sequence = KS_SE},
+   {.key_combo = {NN_C, NN_L, NN_NO}, .key_sequence = KS_ZE},
+   {.key_combo = {NN_C, NN_K, NN_NO}, .key_sequence = KS_RI},
+   {.key_combo = {NN_C, NN_U, NN_NO}, .key_sequence = KS_DYO},
+   {.key_combo = {NN_C, NN_I, NN_NO}, .key_sequence = KS_DYU},
+   {.key_combo = {NN_C, NN_O, NN_NO}, .key_sequence = KS_DYA},
+
+   /* V */
+   {.key_combo = {NN_V, NN_NO, NN_NO}, .key_sequence = KS_TA},
+   {.key_combo = {NN_V, NN_L, NN_NO}, .key_sequence = KS_DA},
+   {.key_combo = {NN_V, NN_K, NN_NO}, .key_sequence = KS_RO},
+   {.key_combo = {NN_V, NN_U, NN_NO}, .key_sequence = KS_GYO},
+   {.key_combo = {NN_V, NN_I, NN_NO}, .key_sequence = KS_GYU},
+   {.key_combo = {NN_V, NN_O, NN_NO}, .key_sequence = KS_GYA},
+
+   /* B */
+   {.key_combo = {NN_B, NN_NO, NN_NO}, .key_sequence = KS_TU},
+   {.key_combo = {NN_B, NN_L, NN_NO}, .key_sequence = KS_DU},
+   {.key_combo = {NN_B, NN_U, NN_NO}, .key_sequence = KS_PYO},
+   {.key_combo = {NN_B, NN_I, NN_NO}, .key_sequence = KS_PYU},
+   {.key_combo = {NN_B, NN_O, NN_NO}, .key_sequence = KS_PYA},
+
+   /* right hand */
+   /* yuiop */
+
+   /* NN_Y */
+   {.key_combo = {NN_Y, NN_NO, NN_NO}, .key_sequence = {KC_DOT}},
+
+   /* NN_U */
+   {.key_combo = {NN_U, NN_NO, NN_NO}, .key_sequence = KS_TE},
+   {.key_combo = {NN_U, NN_S, NN_NO}, .key_sequence = KS_DE},
+
+   /* NN_I */
+   {.key_combo = {NN_I, NN_NO, NN_NO}, .key_sequence = KS_HA},
+   {.key_combo = {NN_I, NN_S, NN_NO}, .key_sequence = KS_BA},
+   {.key_combo = {NN_I, NN_D, NN_NO}, .key_sequence = KS_WA},
+
+   /* NN_O */
+   {.key_combo = {NN_O, NN_NO, NN_NO}, .key_sequence = KS_KO},
+   {.key_combo = {NN_O, NN_D, NN_NO}, .key_sequence = KS_RA},
+   {.key_combo = {NN_O, NN_S, NN_NO}, .key_sequence = KS_GO},
+
+   /* NN_P */
+   {.key_combo = {NN_P, NN_NO, NN_NO}, .key_sequence = KS_HI},
+   {.key_combo = {NN_P, NN_S, NN_NO}, .key_sequence = KS_BI},
+
+   /* hjkl;: */
+   /* H */
+   {.key_combo = {NN_H, NN_NO, NN_NO}, .key_sequence = {KC_MINS}},
+   {.key_combo = {NN_H, NN_D, NN_NO}, .key_sequence = KS_HE},
+   {.key_combo = {NN_H, NN_S, NN_NO}, .key_sequence = KS_BE},
+
+   /* J */
+   {.key_combo = {NN_J, NN_NO, NN_NO}, .key_sequence = KS_U},
+   {.key_combo = {NN_J, NN_D, NN_NO}, .key_sequence = KS_TI},
+   {.key_combo = {NN_J, NN_S, NN_NO}, .key_sequence = KS_DI},
+
+   /* K */
+   {.key_combo = {NN_K, NN_NO, NN_NO}, .key_sequence = KS_I},
+
+   /* L */
+   {.key_combo = {NN_L, NN_NO, NN_NO}, .key_sequence = KS_SI},
+   {.key_combo = {NN_L, NN_S, NN_NO}, .key_sequence = KS_ZI},
+
+   /* NN_SCOLON */
+   {.key_combo = {NN_SCOLON, NN_NO, NN_NO}, .key_sequence = KS_NI},
+   {.key_combo = {NN_SCOLON, NN_D, NN_NO}, .key_sequence = KS_SO},
+   {.key_combo = {NN_SCOLON, NN_S, NN_NO}, .key_sequence = KS_ZO},
+
+   /* nm,./ */
+   /* N */
+   {.key_combo = {NN_N, NN_NO, NN_NO}, .key_sequence = KS_SA},
+   {.key_combo = {NN_N, NN_S, NN_NO}, .key_sequence = KS_ZA},
+   {.key_combo = {NN_N, NN_D, NN_NO}, .key_sequence = KS_NE},
+
+   /* M */
+   {.key_combo = {NN_M, NN_NO, NN_NO}, .key_sequence = KS_NN},
+   {.key_combo = {NN_M, NN_D, NN_NO}, .key_sequence = KS_HO},
+   {.key_combo = {NN_M, NN_S, NN_NO}, .key_sequence = KS_BO},
+
+   /* , */
+   {.key_combo = {NN_COMMA, NN_NO, NN_NO}, .key_sequence = KS_KI},
+   {.key_combo = {NN_COMMA, NN_S, NN_NO}, .key_sequence = KS_GI},
+
+   /* . */
+   {.key_combo = {NN_DOT, NN_NO, NN_NO}, .key_sequence = KS_MO},
+   {.key_combo = {NN_DOT, NN_D, NN_NO}, .key_sequence = KS_HU},
+   {.key_combo = {NN_DOT, NN_S, NN_NO}, .key_sequence = KS_BU},
+
+   /* / */
+   {.key_combo = {NN_SLASH, NN_NO, NN_NO}, .key_sequence = KS_MA},
+   {.key_combo = {NN_SLASH, NN_D, NN_NO}, .key_sequence = KS_YA},
+
+   /* special combination */
+   {.key_combo = {NN_B, NN_F, NN_NO}, .key_sequence = {KC_SLSH}},
+   {.key_combo = {NN_N, NN_J, NN_NO}, .key_sequence = {KC_SLSH}},
+
+   {.key_combo = {NN_S, NN_A, NN_NO}, .key_sequence = KS_PO},
+   {.key_combo = {NN_S, NN_F, NN_NO}, .key_sequence = KS_PE},
+   {.key_combo = {NN_S, NN_V, NN_NO}, .key_sequence = KS_PU},
+   {.key_combo = {NN_S, NN_Z, NN_NO}, .key_sequence = KS_PI},
+   {.key_combo = {NN_S, NN_E, NN_NO}, .key_sequence = KS_PA},
+
+   {.key_combo = {NN_L, NN_SCOLON, NN_NO}, .key_sequence = KS_XO},
+   {.key_combo = {NN_L, NN_J, NN_NO}, .key_sequence = KS_XE},
+   {.key_combo = {NN_L, NN_M, NN_NO}, .key_sequence = KS_XU},
+   {.key_combo = {NN_L, NN_SLASH, NN_NO}, .key_sequence = KS_XI},
+   {.key_combo = {NN_L, NN_I, NN_NO}, .key_sequence = KS_XA},
+
+   {.key_combo = {NN_D, NN_K, NN_NO}, .key_sequence = KS_WO},
+  };
+
+/* Initialize variables for japanese implement */
+void der_init_variables(void) {
+  for (int i = 0; i < NN_LAST_RANGE; i++) {
+    nn_pressed[i] = false;
+  }
+  nn_pressed_keys = 0;
+  nn_shift_continue = false;
+  nn_shift_mode = NN_NO_SHIFT;
+}
+
+/* convert keycode to shift id */
+uint16_t der_conv_kc_to_custom_key(uint16_t keycode) {
+  switch (keycode) {
+  case KC_Q: return NN_Q; break;
+  case KC_W: return NN_W; break;
+  case KC_E: return NN_E; break;
+  case KC_R: return NN_R; break;
+  case KC_T: return NN_T; break;
+  case KC_Y: return NN_Y; break;
+  case KC_U: return NN_U; break;
+  case KC_I: return NN_I; break;
+  case KC_O: return NN_O; break;
+  case KC_P: return NN_P; break;
+  case KC_A: return NN_A; break;
+  case KC_S: return NN_S; break;
+  case KC_D: return NN_D; break;
+  case KC_F: return NN_F; break;
+  case KC_G: return NN_G; break;
+  case KC_H: return NN_H; break;
+  case KC_J: return NN_J; break;
+  case KC_K: return NN_K; break;
+  case KC_L: return NN_L; break;
+  case KC_SCLN: return NN_SCOLON; break;
+  case KC_Z: return NN_Z; break;
+  case KC_X: return NN_X; break;
+  case KC_C: return NN_C; break;
+  case KC_V: return NN_V; break;
+  case KC_B: return NN_B; break;
+  case KC_N: return NN_N; break;
+  case KC_M: return NN_M; break;
+  case KC_COMM: return NN_COMMA; break;
+  case KC_DOT: return NN_DOT; break;
+  case KC_SLSH: return NN_SLASH; break;
+  }
+
+  return NN_NO;
+}
+
+der_nn_key_combination_t der_get_mapping(int index) {
+  der_nn_key_combination_t data;
+  memcpy_P(&data, &der_nn_key_combinations[index], sizeof(der_nn_key_combination_t));
+  return data;
+}
+
+/* simple bubble sort */
+void der_sort_key_combination(uint8_t* seq, int size) {
+  for (int i = 0; i < size; i++) {
+    for (int j = size - 1; j > i; j--) {
+      if (seq[j - 1] > seq[j]) {
+        uint8_t tmp = seq[j];
+        seq[j] = seq[j - 1];
+        seq[j - 1] = tmp;
+      }
+    }
+  }
+}
+
+/* find shift */
+bool der_match_combination_pressed(der_nn_key_combination_t* combination, bool* key_pressed) {
+  uint8_t combination_seq[3] = {NN_NO};
+  uint8_t pressed_seq[3] = {NN_NO};
+  memcpy(combination_seq, combination->key_combo, nn_max_combination * sizeof(uint8_t));
+
+  uint8_t recorded = 0;
+  for (int i = 0; i < NN_LAST_RANGE;i++) {
+    if (recorded >= nn_max_combination) {
+      break;
+    }
+
+    if (key_pressed[i]) {
+      pressed_seq[recorded] = i;
+      recorded++;
+    }
+  }
+
+  der_sort_key_combination(combination_seq, nn_max_combination);
+  der_sort_key_combination(pressed_seq, nn_max_combination);
+
+  for (int i = 0; i < nn_max_combination; i++) {
+    if (combination_seq[i] != pressed_seq[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+/* return index of key_shifters if found shifter */
+int der_find_mapping_on_combinations() {
+  int length = sizeof(der_nn_key_combinations) / sizeof(der_nn_key_combination_t);
+  for (int i = 0; i < length; i++) {
+    der_nn_key_combination_t data = der_get_mapping(i);
+
+    if (der_match_combination_pressed(&data, nn_pressed)) {
+      return i;
+    }
+  }
+
+  return NN_SHIFT_NOT_FOUND;
+}
+
+/* send keycodes in specified key mapping */
+void der_send_key_sequence(int index) {
+
+  if (NN_SHIFT_NOT_FOUND == index) {
+    return;
+  }
+
+  der_nn_key_combination_t mapping = der_get_mapping(index);
+
+  int length = sizeof(mapping.key_sequence) / sizeof(uint8_t);
+  for (int i = 0; i < length; i++) {
+    if (mapping.key_sequence[i] == KC_NO) {
+      continue;
+    }
+    register_code(mapping.key_sequence[i]);
+    unregister_code(mapping.key_sequence[i]);
+  }
+}
+
+void der_update_shift() {
+  uint8_t keys[] = {NN_K, NN_L, NN_I, NN_O, NN_D, NN_W};
+
+  int new_status = NN_NO_SHIFT;
+  int size = sizeof(keys) / sizeof(uint8_t);
+  for (int i = 0; i < size; i++) {
+    switch (keys[i]) {
+    case NN_K:
+      if (nn_pressed[keys[i]]) {
+        new_status |= NN_SHIFT_MODE_MIDDLE;
+      }
+      break;
+    case NN_L:
+      if (nn_pressed[keys[i]]) {
+        new_status |= NN_SHIFT_MODE_MEDICINAL;
+      }
+      break;
+    case NN_D:
+      if (nn_pressed[keys[i]]) {
+        new_status |= NN_SHIFT_MODE_MIDDLE;
+      }
+      break;
+    case NN_S:
+      if (nn_pressed[keys[i]]) {
+        new_status |= NN_SHIFT_MODE_MEDICINAL;
+      }
+      break;
+    default:
+      break;
+    }
+  }
+
+  nn_shift_mode = new_status;
+}
+
+/* Process to resolve key combination from user pressed key */
+bool der_process_nn_combination_pressed(uint16_t keycode, uint8_t custom_key) {
+
+  /* can not handle key pressing if current index arise maximum of combination  */
+  if (nn_pressed_keys >= nn_max_combination) {
+    return false;
+  }
+
+  nn_pressed_keys++;
+  nn_pressed[custom_key] = true;
+
+  der_update_shift();
+
+  return false;
+}
+
+/* check to all key released */
+bool der_all_key_released() {
+  for (int i = 0; i < NN_LAST_RANGE; i++) {
+    if (nn_pressed[i]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/* Process to resolve key sequence when user released key */
+bool der_process_nn_combination_released(uint16_t keycode, uint16_t custom_key) {
+
+  if (der_all_key_released()) {
+    return true;
+  }
+
+  /* get current combination, and release current key. */
+  int index = der_find_mapping_on_combinations();
+  int previous_mode = nn_shift_mode;
+
+  nn_pressed_keys--;
+  nn_pressed[custom_key] = false;
+  der_update_shift();
+
+  if (nn_shift_continue) {
+    if (nn_pressed_keys == 0) {
+      der_init_variables();
+      return false;
+    }
+
+  }
+
+  der_send_key_sequence(index);
+
+  // when release shift key
+  if (previous_mode != nn_shift_mode) {
+    der_init_variables();
+    return false;
+  }
+
+  if (nn_shift_mode != NN_NO_SHIFT) {
+    nn_shift_continue = true;
+  } else {
+    der_init_variables();
+  }
+
+  return false;
+}
+
+/* Process keycodes as hachimitsu-koume keycodes */
+bool der_process_nn(uint16_t keycode, keyrecord_t *record) {
+  if (has_anymod()) {
+    return true;
+  }
+
+  uint16_t custom_key = der_conv_kc_to_custom_key(keycode);
+  if (record->event.pressed) {
+
+    switch (custom_key) {
+    case NN_NO:
+      der_init_variables();
+      break;
+    default:
+      return der_process_nn_combination_pressed(keycode, custom_key);
+    }
+  } else {
+    /* If key released when current shifter is NOSHIFT, pass through keycode to common process.  */
+    switch (custom_key) {
+    case NN_NO:
+      /* initialize all variables */
+      der_init_variables();
+      break;
+    default:
+      return der_process_nn_combination_released(keycode, custom_key);
+    }
+  }
+
+  return true;
+}
