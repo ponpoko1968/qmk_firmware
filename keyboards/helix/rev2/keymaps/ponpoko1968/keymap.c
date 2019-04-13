@@ -70,9 +70,11 @@ enum custom_keycodes {
   BACKLIT,
   EISU,
   KANA,
+  RSFT,
+  LSFT,
   RGBRST
 };
-
+ 
 enum macro_keycodes {
   KC_SAMPLEMACRO,
 };
@@ -147,11 +149,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
       ),
 
   [_JAPANESE] = LAYOUT( \
-                     KC_ESC            ,  KC_1   ,    KC_2  ,    KC_3 ,    KC_4  ,    KC_5   ,   /* dummy , dummy          , */  KC_6 ,    KC_7   ,    KC_8    ,    KC_9 ,    KC_0    , KC_DEL , \
-                     KC_TAB            ,  KC_Q   ,    KC_W  ,    KC_E ,    KC_R  ,    KC_T   ,   /* dummy , dummy          , */  KC_Y ,    KC_U   ,    KC_I    ,    KC_O ,    KC_P    , KC_BSPC  , \
-                     LCTL(KC_RBRACKET) ,  KC_A   ,    KC_S  ,    KC_D ,    KC_F  ,    KC_G   ,   /* dummy , dummy          , */  KC_H ,    KC_J   ,    KC_K    ,    KC_L ,    KC_SCLN , KC_ENT  , \
-                     KC_LSFT           ,  KC_Z   ,    KC_X  ,    KC_C ,    KC_V  ,    KC_B   ,   KC_INS  , KC_F1        ,     KC_N ,    KC_M   ,    KC_COMM , KC_DOT  ,    KC_SLSH , KC_RSFT , \
-                     KC_LCTL           ,  ADJUST ,  KC_LALT , KC_LALT ,  KC_LALT ,    KC_LGUI,   LOWER    , LGUI(KC_SPACE) ,     _______, _______  ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
+                     KC_ESC            ,  KC_1   ,    KC_2  ,    KC_3 ,    KC_4  ,    KC_5    ,   /* dummy , dummy , */  KC_6    ,    KC_7 ,    KC_8    ,    KC_9 ,    KC_0    , KC_DEL  , \
+                     KC_TAB            ,  KC_Q   ,    KC_W  ,    KC_E ,    KC_R  ,    KC_T    ,   /* dummy , dummy , */  KC_Y    ,    KC_U ,    KC_I    ,    KC_O ,    KC_P    , KC_BSPC , \
+                     LCTL(KC_RBRACKET) ,  KC_A   ,    KC_S  ,    KC_D ,    KC_F  ,    KC_G    ,   /* dummy , dummy , */  KC_H    ,    KC_J ,    KC_K    ,    KC_L ,    KC_SCLN , KC_ENT  , \
+                     KC_LSFT           ,  KC_Z   ,    KC_X  ,    KC_C ,    KC_V  ,    KC_B    ,   KC_INS   , KC_F1 ,     KC_N    ,    KC_M ,    KC_COMM , KC_DOT  ,    KC_SLSH , KC_RSFT , \
+                     KC_LCTL           ,  ADJUST ,  KC_LALT , KC_LALT ,  KC_LALT ,    KC_LGUI ,   LSFT     , RSFT  ,     _______ , _______ ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
                       ),
 
   /* Adjust (Lower + Raise)
@@ -493,6 +495,9 @@ enum der_nn_keys {
   NN_COMMA,           /* , and < */
   NN_DOT,             /* . and > */
   NN_SLASH,           /* / and ? */
+  NN_ENT,
+  NN_RSFT,
+  NN_LSFT,
   NN_LAST_RANGE,
 };
 
@@ -507,7 +512,7 @@ static bool nn_shift_continue = false;
 /* key sequence mapped keycode what is shifted  */
 typedef struct {
   uint8_t key_combo[3];
-  uint8_t key_sequence[4];
+  uint16_t key_sequence[4];
 } der_nn_key_combination_t;
 
 /* Define keycode and sequence when some key shifted */
@@ -517,199 +522,180 @@ const der_nn_key_combination_t PROGMEM der_nn_key_combinations[] =
    /* qwert */
 
    /* Q */
-   {.key_combo = {NN_Q, NN_NO, NN_NO}, .key_sequence = KS_YO},
-   {.key_combo = {NN_Q, NN_K, NN_NO}, .key_sequence = KS_VU},
-   {.key_combo = {NN_Q, NN_U, NN_NO}, .key_sequence = KS_HYO},
-   {.key_combo = {NN_Q, NN_I, NN_NO}, .key_sequence = KS_HYU},
-   {.key_combo = {NN_Q, NN_O, NN_NO}, .key_sequence = KS_HYA},
+    {.key_combo = {NN_Q, NN_LSFT, NN_NO}, .key_sequence = KS_PE},
+    {.key_combo = {NN_Q, NN_RSFT, NN_NO}, .key_sequence = KS_PA},
+    {.key_combo = {NN_Q, NN_NO, NN_NO}, .key_sequence = {KC_DOT}},
 
    /* W */
-   {.key_combo = {NN_W, NN_NO, NN_NO}, .key_sequence = KS_KU},
-   {.key_combo = {NN_W, NN_L, NN_NO}, .key_sequence = KS_GU},
-   {.key_combo = {NN_W, NN_K, NN_NO}, .key_sequence = KS_O},
-   {.key_combo = {NN_W, NN_U, NN_NO}, .key_sequence = KS_SYO},
-   {.key_combo = {NN_W, NN_I, NN_NO}, .key_sequence = KS_SYU},
-   {.key_combo = {NN_W, NN_O, NN_NO}, .key_sequence = KS_SYA},
+    {.key_combo = {NN_W, NN_LSFT, NN_NO}, .key_sequence = KS_KE},
+    {.key_combo = {NN_W, NN_RSFT, NN_NO}, .key_sequence = KS_GE},
+    {.key_combo = {NN_W, NN_NO, NN_NO}, .key_sequence = KS_NA},
 
   /* E */
-   {.key_combo = {NN_E, NN_NO, NN_NO}, .key_sequence = KS_RU},
-   {.key_combo = {NN_E, NN_K, NN_NO}, .key_sequence = KS_MI},
-   {.key_combo = {NN_E, NN_U, NN_NO}, .key_sequence = KS_TYO},
-   {.key_combo = {NN_E, NN_I, NN_NO}, .key_sequence = KS_TYU},
-   {.key_combo = {NN_E, NN_O, NN_NO}, .key_sequence = KS_TYA},
+    {.key_combo = {NN_E, NN_LSFT, NN_NO}, .key_sequence = KS_YO},
+    {.key_combo = {NN_E, NN_RSFT, NN_NO}, .key_sequence = KS_DE},
+    {.key_combo = {NN_E, NN_NO, NN_NO}, .key_sequence = KS_TE},
 
   /* R */
-   {.key_combo = {NN_R, NN_NO, NN_NO}, .key_sequence = KS_KE},
-   {.key_combo = {NN_R, NN_L, NN_NO}, .key_sequence = KS_GE},
-   {.key_combo = {NN_R, NN_U, NN_NO}, .key_sequence = KS_KYO},
-   {.key_combo = {NN_R, NN_I, NN_NO}, .key_sequence = KS_KYU},
-   {.key_combo = {NN_R, NN_O, NN_NO}, .key_sequence = KS_KYA},
+    /* {.key_combo = {NN_R, NN_LSFT, NN_NO}, .key_sequence = KS_YO}, */
+    {.key_combo = {NN_R, NN_RSFT, NN_NO}, .key_sequence = KS_ZE},
+    {.key_combo = {NN_R, NN_NO, NN_NO}, .key_sequence = KS_SE},
+
 
   /* T */
-   {.key_combo = {NN_T, NN_NO, NN_NO}, .key_sequence = {KC_COMM}},
-   {.key_combo = {NN_T, NN_U, NN_NO}, .key_sequence = KS_MYO},
-   {.key_combo = {NN_T, NN_I, NN_NO}, .key_sequence = KS_MYU},
-   {.key_combo = {NN_T, NN_O, NN_NO}, .key_sequence = KS_MYA},
+    {.key_combo = {NN_T, NN_LSFT, NN_NO}, .key_sequence = {KC_DOT,KC_DOT,KC_DOT}},
+    {.key_combo = {NN_T, NN_RSFT, NN_NO}, .key_sequence = KS_ZO},
+    {.key_combo = {NN_T, NN_NO, NN_NO}, .key_sequence = KS_SO},
 
   /* asdfg */
 
    /* A */
-   {.key_combo = {NN_A, NN_NO, NN_NO}, .key_sequence = KS_NO},
-   {.key_combo = {NN_A, NN_K, NN_NO}, .key_sequence = KS_ME},
-   {.key_combo = {NN_A, NN_U, NN_NO}, .key_sequence = KS_NYO},
-   {.key_combo = {NN_A, NN_I, NN_NO}, .key_sequence = KS_NYU},
-   {.key_combo = {NN_A, NN_O, NN_NO}, .key_sequence = KS_NYA},
+    {.key_combo = {NN_A, NN_LSFT, NN_NO}, .key_sequence = KS_ME},
+    {.key_combo = {NN_A, NN_RSFT, NN_NO}, .key_sequence = KS_GO},
+    {.key_combo = {NN_A, NN_NO, NN_NO}, .key_sequence = KS_KO},
 
    /* S */
-   {.key_combo = {NN_S, NN_NO, NN_NO}, .key_sequence = KS_NA},
-   {.key_combo = {NN_S, NN_K, NN_NO}, .key_sequence = KS_E},
-
-  /* D */
-   {.key_combo = {NN_D, NN_NO, NN_NO}, .key_sequence = KS_TO},
-   {.key_combo = {NN_D, NN_L, NN_NO}, .key_sequence = KS_DO},
+    {.key_combo = {NN_S, NN_LSFT, NN_NO}, .key_sequence = KS_YA},
+    {.key_combo = {NN_S, NN_RSFT, NN_NO}, .key_sequence = KS_DA},
+    {.key_combo = {NN_S, NN_NO, NN_NO}, .key_sequence = KS_TA},
 
 
-  /* F */
-   {.key_combo = {NN_F, NN_NO, NN_NO}, .key_sequence = KS_KA},
-   {.key_combo = {NN_F, NN_L, NN_NO}, .key_sequence = KS_GA},
-   {.key_combo = {NN_F, NN_K, NN_NO}, .key_sequence = KS_A},
+    /* D */
+    {.key_combo = {NN_D, NN_LSFT, NN_NO}, .key_sequence = KS_MO},
+    {.key_combo = {NN_D, NN_RSFT, NN_NO}, .key_sequence = KS_GA},
+    {.key_combo = {NN_D, NN_NO, NN_NO}, .key_sequence = KS_KA},
 
+    /* F */
+    {.key_combo = {NN_F, NN_LSFT, NN_NO}, .key_sequence = KS_SA},
+    {.key_combo = {NN_F, NN_RSFT, NN_NO}, .key_sequence = KS_ZA},
+    {.key_combo = {NN_F, NN_NO, NN_NO}, .key_sequence = KS_RU},
 
-  /* G */
-   {.key_combo = {NN_G, NN_NO, NN_NO}, .key_sequence = KS_XTU},
-   {.key_combo = {NN_G, NN_K, NN_NO}, .key_sequence = KS_YU},
-   {.key_combo = {NN_G, NN_U, NN_NO}, .key_sequence = KS_RYO},
-   {.key_combo = {NN_G, NN_I, NN_NO}, .key_sequence = KS_RYU},
-   {.key_combo = {NN_G, NN_O, NN_NO}, .key_sequence = KS_RYA},
+    /* G */
+    {.key_combo = {NN_G, NN_LSFT, NN_NO}, .key_sequence = KS_XU},
+    {.key_combo = {NN_G, NN_RSFT, NN_NO}, .key_sequence = KS_BA},
+    {.key_combo = {NN_G, NN_NO, NN_NO}, .key_sequence = KS_HA},
 
-  /* zxcvb */
+    /* Z */
+    {.key_combo = {NN_Z, NN_LSFT, NN_NO}, .key_sequence = KS_XYU},
+    {.key_combo = {NN_Z, NN_RSFT, NN_NO}, .key_sequence = KS_PO},
+    {.key_combo = {NN_Z, NN_NO, NN_NO}, .key_sequence = KS_YU},
 
-   /* Z */
-   {.key_combo = {NN_Z, NN_NO, NN_NO}, .key_sequence = KS_SU},
-   {.key_combo = {NN_Z, NN_L, NN_NO}, .key_sequence = KS_ZU},
-   {.key_combo = {NN_Z, NN_K, NN_NO}, .key_sequence = KS_NU},
-   {.key_combo = {NN_Z, NN_U, NN_NO}, .key_sequence = KS_BYO},
-   {.key_combo = {NN_Z, NN_I, NN_NO}, .key_sequence = KS_BYU},
-   {.key_combo = {NN_Z, NN_O, NN_NO}, .key_sequence = KS_BYA},
+    /* X */
+    {.key_combo = {NN_X , NN_LSFT , NN_NO} , .key_sequence = KS_XYA} ,
+    {.key_combo = {NN_X , NN_RSFT , NN_NO} , .key_sequence = KS_BO} ,
+    {.key_combo = {NN_X , NN_NO   , NN_NO} , .key_sequence = KS_HO} ,
 
-   /* X */
-   {.key_combo = {NN_X, NN_NO, NN_NO}, .key_sequence = KS_RE},
-   {.key_combo = {NN_X, NN_K, NN_NO}, .key_sequence = KS_MU},
-   {.key_combo = {NN_X, NN_U, NN_NO}, .key_sequence = KS_ZYO},
-   {.key_combo = {NN_X, NN_I, NN_NO}, .key_sequence = KS_ZYU},
-   {.key_combo = {NN_X, NN_O, NN_NO}, .key_sequence = KS_ZYA},
+    /* C */
+    {.key_combo = {NN_C, NN_LSFT, NN_NO}, .key_sequence = KS_HU},
+    {.key_combo = {NN_C, NN_RSFT, NN_NO}, .key_sequence = KS_BU},
+    {.key_combo = {NN_C, NN_NO, NN_NO}, .key_sequence = KS_MA},
 
-   /* C */
-   {.key_combo = {NN_C, NN_NO, NN_NO}, .key_sequence = KS_SE},
-   {.key_combo = {NN_C, NN_L, NN_NO}, .key_sequence = KS_ZE},
-   {.key_combo = {NN_C, NN_K, NN_NO}, .key_sequence = KS_RI},
-   {.key_combo = {NN_C, NN_U, NN_NO}, .key_sequence = KS_DYO},
-   {.key_combo = {NN_C, NN_I, NN_NO}, .key_sequence = KS_DYU},
-   {.key_combo = {NN_C, NN_O, NN_NO}, .key_sequence = KS_DYA},
+    /* V */
+    {.key_combo = {NN_V, NN_LSFT, NN_NO}, .key_sequence = KS_XYO},
+    {.key_combo = {NN_V, NN_RSFT, NN_NO}, .key_sequence = KS_PU},
+    {.key_combo = {NN_V, NN_NO, NN_NO}, .key_sequence = KS_RO},
 
-   /* V */
-   {.key_combo = {NN_V, NN_NO, NN_NO}, .key_sequence = KS_TA},
-   {.key_combo = {NN_V, NN_L, NN_NO}, .key_sequence = KS_DA},
-   {.key_combo = {NN_V, NN_K, NN_NO}, .key_sequence = KS_RO},
-   {.key_combo = {NN_V, NN_U, NN_NO}, .key_sequence = KS_GYO},
-   {.key_combo = {NN_V, NN_I, NN_NO}, .key_sequence = KS_GYU},
-   {.key_combo = {NN_V, NN_O, NN_NO}, .key_sequence = KS_GYA},
+    /* B */
+    {.key_combo = {NN_B, NN_LSFT, NN_NO}, .key_sequence = KS_XO},
+    {.key_combo = {NN_B, NN_RSFT, NN_NO}, .key_sequence = KS_XWA},
+    {.key_combo = {NN_B, NN_NO, NN_NO}, .key_sequence = {KC_TILDE}},
 
-   /* B */
-   {.key_combo = {NN_B, NN_NO, NN_NO}, .key_sequence = KS_TU},
-   {.key_combo = {NN_B, NN_L, NN_NO}, .key_sequence = KS_DU},
-   {.key_combo = {NN_B, NN_U, NN_NO}, .key_sequence = KS_PYO},
-   {.key_combo = {NN_B, NN_I, NN_NO}, .key_sequence = KS_PYU},
-   {.key_combo = {NN_B, NN_O, NN_NO}, .key_sequence = KS_PYA},
+    /* Y */
+    {.key_combo = {NN_Y, NN_NO, NN_NO}, .key_sequence = {KC_SLSH}},
 
-   /* right hand */
-   /* yuiop */
+    /* U */
+    {.key_combo = {NN_U, NN_LSFT, NN_NO}, .key_sequence = KS_BI},
+    {.key_combo = {NN_U, NN_RSFT, NN_NO}, .key_sequence = KS_HI},
+    {.key_combo = {NN_U, NN_NO, NN_NO}, .key_sequence = KS_O},
 
-   /* NN_Y */
-   {.key_combo = {NN_Y, NN_NO, NN_NO}, .key_sequence = {KC_DOT}},
+    /* I */
+    {.key_combo = {NN_I, NN_LSFT, NN_NO}, .key_sequence = KS_GI},
+    {.key_combo = {NN_I, NN_RSFT, NN_NO}, .key_sequence = KS_KI},
+    {.key_combo = {NN_I, NN_NO, NN_NO}, .key_sequence = KS_NO},
 
-   /* NN_U */
-   {.key_combo = {NN_U, NN_NO, NN_NO}, .key_sequence = KS_TE},
-   {.key_combo = {NN_U, NN_S, NN_NO}, .key_sequence = KS_DE},
+    /* O */
+    {.key_combo = {NN_O, NN_LSFT, NN_NO}, .key_sequence = KS_DU},
+    {.key_combo = {NN_O, NN_RSFT, NN_NO}, .key_sequence = KS_TU},
+    {.key_combo = {NN_O, NN_NO, NN_NO}, .key_sequence = KS_NI},
 
-   /* NN_I */
-   {.key_combo = {NN_I, NN_NO, NN_NO}, .key_sequence = KS_HA},
-   {.key_combo = {NN_I, NN_S, NN_NO}, .key_sequence = KS_BA},
-   {.key_combo = {NN_I, NN_D, NN_NO}, .key_sequence = KS_WA},
+    /* P */
+    {.key_combo = {NN_P, NN_LSFT, NN_NO}, .key_sequence = {KC_RBRC}},
+    {.key_combo = {NN_P, NN_RSFT, NN_NO}, .key_sequence = {KC_LBRC}},
+    {.key_combo = {NN_P, NN_NO, NN_NO}, .key_sequence = {KC_LBRC,KC_RBRC}},
 
-   /* NN_O */
-   {.key_combo = {NN_O, NN_NO, NN_NO}, .key_sequence = KS_KO},
-   {.key_combo = {NN_O, NN_D, NN_NO}, .key_sequence = KS_RA},
-   {.key_combo = {NN_O, NN_S, NN_NO}, .key_sequence = KS_GO},
+    /* H */
+    {.key_combo = {NN_H, NN_LSFT, NN_NO}, .key_sequence = KS_XI},
+    {.key_combo = {NN_H, NN_RSFT, NN_NO}, .key_sequence = KS_MU},
+    {.key_combo = {NN_H, NN_NO, NN_NO}, .key_sequence = {KC_MINS}},
 
-   /* NN_P */
-   {.key_combo = {NN_P, NN_NO, NN_NO}, .key_sequence = KS_HI},
-   {.key_combo = {NN_P, NN_S, NN_NO}, .key_sequence = KS_BI},
+    /* J */
+    {.key_combo = {NN_J, NN_LSFT, NN_NO}, .key_sequence = KS_XA},
+    {.key_combo = {NN_J, NN_RSFT, NN_NO}, .key_sequence = KS_RE},
+    {.key_combo = {NN_J, NN_NO, NN_NO}, .key_sequence = KS_NN},
 
-   /* hjkl;: */
-   /* H */
-   {.key_combo = {NN_H, NN_NO, NN_NO}, .key_sequence = {KC_MINS}},
-   {.key_combo = {NN_H, NN_D, NN_NO}, .key_sequence = KS_HE},
-   {.key_combo = {NN_H, NN_S, NN_NO}, .key_sequence = KS_BE},
+    /* K */
+    {.key_combo = {NN_K, NN_LSFT, NN_NO}, .key_sequence = KS_GU},
+    {.key_combo = {NN_K, NN_RSFT, NN_NO}, .key_sequence = KS_KU},
+    {.key_combo = {NN_K, NN_NO, NN_NO}, .key_sequence = KS_I},
 
-   /* J */
-   {.key_combo = {NN_J, NN_NO, NN_NO}, .key_sequence = KS_U},
-   {.key_combo = {NN_J, NN_D, NN_NO}, .key_sequence = KS_TI},
-   {.key_combo = {NN_J, NN_S, NN_NO}, .key_sequence = KS_DI},
+    /* L */
+    {.key_combo = {NN_L, NN_LSFT, NN_NO}, .key_sequence = KS_ZI},
+    {.key_combo = {NN_L, NN_RSFT, NN_NO}, .key_sequence = KS_RI},
+    {.key_combo = {NN_L, NN_NO, NN_NO}, .key_sequence = KS_SI},
 
-   /* K */
-   {.key_combo = {NN_K, NN_NO, NN_NO}, .key_sequence = KS_I},
+    /* SCOLON */
+    {.key_combo = {NN_SCOLON, NN_LSFT, NN_NO}, .key_sequence = KS_DO},
+    {.key_combo = {NN_SCOLON, NN_RSFT, NN_NO}, .key_sequence = KS_WA},
+    {.key_combo = {NN_SCOLON, NN_NO, NN_NO}, .key_sequence = KS_TO},
 
-   /* L */
-   {.key_combo = {NN_L, NN_NO, NN_NO}, .key_sequence = KS_SI},
-   {.key_combo = {NN_L, NN_S, NN_NO}, .key_sequence = KS_ZI},
+    /* ENT */
+    {.key_combo = {NN_ENT, NN_LSFT, NN_NO}, .key_sequence = KS_PI},
+    {.key_combo = {NN_ENT, NN_RSFT, NN_NO}, .key_sequence = KS_NE},
+    {.key_combo = {NN_ENT, NN_NO, NN_NO}, .key_sequence = {KC_ENT}},
 
-   /* NN_SCOLON */
-   {.key_combo = {NN_SCOLON, NN_NO, NN_NO}, .key_sequence = KS_NI},
-   {.key_combo = {NN_SCOLON, NN_D, NN_NO}, .key_sequence = KS_SO},
-   {.key_combo = {NN_SCOLON, NN_S, NN_NO}, .key_sequence = KS_ZO},
+    /* N */
+    {.key_combo = {NN_N, NN_LSFT, NN_NO}, .key_sequence = KS_XE},
+    {.key_combo = {NN_N, NN_RSFT, NN_NO}, .key_sequence = KS_MI},
+    {.key_combo = {NN_N, NN_NO, NN_NO}, .key_sequence = KS_XTU},
 
-   /* nm,./ */
-   /* N */
-   {.key_combo = {NN_N, NN_NO, NN_NO}, .key_sequence = KS_SA},
-   {.key_combo = {NN_N, NN_S, NN_NO}, .key_sequence = KS_ZA},
-   {.key_combo = {NN_N, NN_D, NN_NO}, .key_sequence = KS_NE},
+    /* M */
+    {.key_combo = {NN_M, NN_LSFT, NN_NO}, .key_sequence = KS_VU},
+    {.key_combo = {NN_M, NN_RSFT, NN_NO}, .key_sequence = KS_A},
+    {.key_combo = {NN_M, NN_NO, NN_NO}, .key_sequence = KS_U},
 
-   /* M */
-   {.key_combo = {NN_M, NN_NO, NN_NO}, .key_sequence = KS_NN},
-   {.key_combo = {NN_M, NN_D, NN_NO}, .key_sequence = KS_HO},
-   {.key_combo = {NN_M, NN_S, NN_NO}, .key_sequence = KS_BO},
+    /* COMMA */
+    {.key_combo = {NN_COMMA, NN_LSFT, NN_NO}, .key_sequence = KS_ZU},
+    {.key_combo = {NN_COMMA, NN_RSFT, NN_NO}, .key_sequence = KS_E},
+    {.key_combo = {NN_COMMA, NN_NO, NN_NO}, .key_sequence = KS_SU},
 
-   /* , */
-   {.key_combo = {NN_COMMA, NN_NO, NN_NO}, .key_sequence = KS_KI},
-   {.key_combo = {NN_COMMA, NN_S, NN_NO}, .key_sequence = KS_GI},
+    /* DOT */
+    {.key_combo = {NN_DOT, NN_LSFT, NN_NO}, .key_sequence = KS_DI},
+    {.key_combo = {NN_DOT, NN_RSFT, NN_NO}, .key_sequence = KS_TI},
+    {.key_combo = {NN_DOT, NN_NO, NN_NO}, .key_sequence = KS_RA},
 
-   /* . */
-   {.key_combo = {NN_DOT, NN_NO, NN_NO}, .key_sequence = KS_MO},
-   {.key_combo = {NN_DOT, NN_D, NN_NO}, .key_sequence = KS_HU},
-   {.key_combo = {NN_DOT, NN_S, NN_NO}, .key_sequence = KS_BU},
+    /* SLASH */
+    {.key_combo = {NN_SLASH, NN_LSFT, NN_NO}, .key_sequence = KS_BE},
+    {.key_combo = {NN_SLASH, NN_RSFT, NN_NO}, .key_sequence = KS_NU},
+    {.key_combo = {NN_SLASH, NN_NO, NN_NO}, .key_sequence = KS_HE},
 
-   /* / */
-   {.key_combo = {NN_SLASH, NN_NO, NN_NO}, .key_sequence = KS_MA},
-   {.key_combo = {NN_SLASH, NN_D, NN_NO}, .key_sequence = KS_YA},
 
    /* special combination */
-   {.key_combo = {NN_B, NN_F, NN_NO}, .key_sequence = {KC_SLSH}},
-   {.key_combo = {NN_N, NN_J, NN_NO}, .key_sequence = {KC_SLSH}},
-
-   {.key_combo = {NN_S, NN_A, NN_NO}, .key_sequence = KS_PO},
-   {.key_combo = {NN_S, NN_F, NN_NO}, .key_sequence = KS_PE},
-   {.key_combo = {NN_S, NN_V, NN_NO}, .key_sequence = KS_PU},
-   {.key_combo = {NN_S, NN_Z, NN_NO}, .key_sequence = KS_PI},
-   {.key_combo = {NN_S, NN_E, NN_NO}, .key_sequence = KS_PA},
-
-   {.key_combo = {NN_L, NN_SCOLON, NN_NO}, .key_sequence = KS_XO},
-   {.key_combo = {NN_L, NN_J, NN_NO}, .key_sequence = KS_XE},
-   {.key_combo = {NN_L, NN_M, NN_NO}, .key_sequence = KS_XU},
-   {.key_combo = {NN_L, NN_SLASH, NN_NO}, .key_sequence = KS_XI},
-   {.key_combo = {NN_L, NN_I, NN_NO}, .key_sequence = KS_XA},
-
    {.key_combo = {NN_D, NN_K, NN_NO}, .key_sequence = KS_WO},
+   /* {.key_combo = {NN_N, NN_J, NN_NO}, .key_sequence = {KC_SLSH}}, */
+
+   /* {.key_combo = {NN_S, NN_A, NN_NO}, .key_sequence = KS_PO}, */
+   /* {.key_combo = {NN_S, NN_F, NN_NO}, .key_sequence = KS_PE}, */
+   /* {.key_combo = {NN_S, NN_V, NN_NO}, .key_sequence = KS_PU}, */
+   /* {.key_combo = {NN_S, NN_Z, NN_NO}, .key_sequence = KS_PI}, */
+   /* {.key_combo = {NN_S, NN_E, NN_NO}, .key_sequence = KS_PA}, */
+
+   /* {.key_combo = {NN_L, NN_SCOLON, NN_NO}, .key_sequence = KS_XO}, */
+   /* {.key_combo = {NN_L, NN_J, NN_NO}, .key_sequence = KS_XE}, */
+   /* {.key_combo = {NN_L, NN_M, NN_NO}, .key_sequence = KS_XU}, */
+   /* {.key_combo = {NN_L, NN_SLASH, NN_NO}, .key_sequence = KS_XI}, */
+   /* {.key_combo = {NN_L, NN_I, NN_NO}, .key_sequence = KS_XA}, */
+
+   /* {.key_combo = {NN_D, NN_K, NN_NO}, .key_sequence = KS_WO}, */
   };
 
 /* Initialize variables for japanese implement */
@@ -755,6 +741,9 @@ uint16_t der_conv_kc_to_custom_key(uint16_t keycode) {
   case KC_COMM: return NN_COMMA; break;
   case KC_DOT: return NN_DOT; break;
   case KC_SLSH: return NN_SLASH; break;
+  case KC_ENT: return NN_ENT; break;
+  case RSFT: return NN_RSFT; break;
+  case LSFT: return NN_LSFT; break;
   }
 
   return NN_NO;
@@ -832,7 +821,7 @@ void der_send_key_sequence(int index) {
 
   der_nn_key_combination_t mapping = der_get_mapping(index);
 
-  int length = sizeof(mapping.key_sequence) / sizeof(uint8_t);
+  int length = sizeof(mapping.key_sequence) / sizeof(uint16_t);
   for (int i = 0; i < length; i++) {
     if (mapping.key_sequence[i] == KC_NO) {
       continue;

@@ -104,6 +104,10 @@
 #define KS_XU {KC_X, KC_U}
 #define KS_XE {KC_X, KC_E}
 #define KS_XO {KC_X, KC_O}
+#define KS_XYU {KC_X, KC_Y, KC_U}
+#define KS_XYA {KC_X, KC_Y, KC_A}
+#define KS_XYO {KC_X, KC_Y, KC_O}
+#define KS_XWA {KC_X, KC_W, KC_A}
 
 // 拗音拡張
 #define KS_KYA {KC_K, KC_Y, KC_A}
