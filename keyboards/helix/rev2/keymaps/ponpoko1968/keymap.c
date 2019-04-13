@@ -72,6 +72,7 @@ enum custom_keycodes {
   KANA,
   RSFT,
   LSFT,
+  HACHIMITSU,
   RGBRST
 };
  
@@ -103,7 +104,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_TAB            ,  KC_Q   ,    KC_W  ,    KC_E ,    KC_R  ,    KC_T   ,   /* dummy , dummy          , */  KC_Y ,    KC_U   ,    KC_I    ,    KC_O ,    KC_P    , KC_BSPC  , \
                      LCTL(KC_RBRACKET) ,  KC_A   ,    KC_S  ,    KC_D ,    KC_F  ,    KC_G   ,   /* dummy , dummy          , */  KC_H ,    KC_J   ,    KC_K    ,    KC_L ,    KC_SCLN , KC_ENT  , \
                      KC_LSFT           ,  KC_Z   ,    KC_X  ,    KC_C ,    KC_V  ,    KC_B   ,   KC_INS  , KC_F1        ,     KC_N ,    KC_M   ,    KC_COMM , KC_DOT  ,    KC_SLSH , KC_RSFT , \
-                     KC_LCTL           ,  ADJUST ,  KC_LALT , KC_LALT ,  KC_LALT ,    KC_LGUI,   LOWER    , LGUI(KC_SPACE) ,     LT(_RAISE,KC_SPACE), TG(_JAPANESE)  ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
+                     KC_LCTL           ,  ADJUST ,  KC_LALT , KC_LALT ,  KC_LALT ,    KC_LGUI,   LOWER    , LGUI(KC_SPACE) ,     LT(_RAISE,KC_SPACE), HACHIMITSU  ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
                       ),
 
   /* Lower
@@ -215,85 +216,89 @@ void update_tri_layer_RGB(uint8_t layer1, uint8_t layer2, uint8_t layer3) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
+  static bool isHachimitsuPressed = false;
+    switch (keycode) {
     case QWERTY:
-      if (record->event.pressed) {
-        #ifdef AUDIO_ENABLE
-          PLAY_SONG(tone_qwerty);
-        #endif
-        persistent_default_layer_set(1UL<<_QWERTY);
-      }
-      return false;
-      break;
+    if (record->event.pressed) {
+#ifdef AUDIO_ENABLE
+      PLAY_SONG(tone_qwerty);
+#endif
+      persistent_default_layer_set(1UL<<_QWERTY);
+    }
+    return false;
+    break;
     case LOWER:
-      if (record->event.pressed) {
-          //not sure how to have keyboard check mode and set it to a variable, so my work around
-          //uses another variable that would be set to true after the first time a reactive key is pressed.
-        if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
-        } else {
-          TOG_STATUS = !TOG_STATUS;
-        }
-        layer_on(_LOWER);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    if (record->event.pressed) {
+      //not sure how to have keyboard check mode and set it to a variable, so my work around
+      //uses another variable that would be set to true after the first time a reactive key is pressed.
+      if (TOG_STATUS) { //TOG_STATUS checks is another reactive key currently pressed, only changes RGB mode if returns false
       } else {
-        TOG_STATUS = false;
-        layer_off(_LOWER);
-        update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+        TOG_STATUS = !TOG_STATUS;
       }
-      return false;
-      break;
+      layer_on(_LOWER);
+      update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    } else {
+      TOG_STATUS = false;
+      layer_off(_LOWER);
+      update_tri_layer_RGB(_LOWER, _RAISE, _ADJUST);
+    }
+    return false;
+    break;
 
     case RAISE:
-      if (record->event.pressed) {
-        layer_on(_RAISE);
-      } else {
-        layer_off(_RAISE);
-        TOG_STATUS = false;
-      }
-      return false;
-      break;
+    if (record->event.pressed) {
+      layer_on(_RAISE);
+    } else {
+      layer_off(_RAISE);
+      TOG_STATUS = false;
+    }
+    return false;
+    break;
 
     case ADJUST:
-        if (record->event.pressed) {
-          layer_on(_ADJUST);
-        } else {
-          layer_off(_ADJUST);
-        }
-        return false;
-        break;
+    if (record->event.pressed) {
+      layer_on(_ADJUST);
+    } else {
+      layer_off(_ADJUST);
+    }
+    return false;
+    break;
 
     case RGB_MOD:
-      return false;
-      break;
+    return false;
+    break;
 
-    case EISU:
+    case HACHIMITSU:
       if (record->event.pressed) {
-        if(keymap_config.swap_lalt_lgui==false){
-          register_code(KC_LANG2);
+        if (isHachimitsuPressed){
+          if(keymap_config.swap_lalt_lgui==false){
+            register_code(KC_LANG2);
+          }else{
+            SEND_STRING(SS_LALT("`"));
+          }
+          layer_off(_JAPANESE);
         }else{
-          SEND_STRING(SS_LALT("`"));
-        }
-      } else {
-        unregister_code(KC_LANG2);
-      }
-      return false;
-      break;
-
-    case KANA:
-      if (record->event.pressed) {
-        if(keymap_config.swap_lalt_lgui==false){
+          if(keymap_config.swap_lalt_lgui==false){
+            register_code(KC_LANG1);
+          }else{
+            SEND_STRING(SS_LALT("`"));
+          }
           register_code(KC_LANG1);
-        }else{
-          SEND_STRING(SS_LALT("`"));
+          layer_on(_JAPANESE);
         }
-      } else {
-        unregister_code(KC_LANG1);
+        isHachimitsuPressed = !isHachimitsuPressed;
+      }else{
+        if(isHachimitsuPressed){
+          unregister_code(KC_LANG2);
+        }else{
+          unregister_code(KC_LANG1);
+        }
       }
-      return false;
-      break;
+    return false;
+    break;
     case RGBRST:
-      break;
-  }
+    break;
+    }
 
   uint8_t layer = biton32(layer_state);
   switch (layer) {
