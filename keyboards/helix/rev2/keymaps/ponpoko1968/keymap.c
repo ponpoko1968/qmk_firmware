@@ -49,10 +49,10 @@ extern uint8_t is_master;
 // entirely and just use numbers.
 enum layer_number {
     _QWERTY = 0,
-    _JAPANESE = 2,
-    _LOWER  = 3 ,                     /* 1 */
-    _RAISE  = 4,                     /* 2 */
-    _ADJUST  = 8
+    _JAPANESE,
+    _LOWER ,                     /* 1 */
+    _RAISE,                     /* 2 */
+    _ADJUST
 };
 
 /* #define _QWERTY 0 */
@@ -84,7 +84,7 @@ enum macro_keycodes {
 #define M_SAMPLE M(KC_SAMPLEMACRO)
 
 #if HELIX_ROWS == 5
-const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
   /* Qwerty
    * ,-----------------------------------------.             ,-----------------------------------------.
@@ -107,15 +107,22 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                      KC_LCTL           ,  ADJUST ,TG(_LOWER) ,TG(_RAISE) ,  KC_LALT ,    KC_LGUI ,   LOWER    , LGUI(KC_SPACE) , LT(_RAISE,KC_SPACE), HACHIMITSU ,    KC_LEFT , KC_DOWN    ,    KC_UP , KC_RGHT \
                       ),
 
+  [_JAPANESE] = LAYOUT( \
+                       KC_ESC            ,  KC_1   ,    KC_2  ,    KC_3 ,    KC_4  ,    KC_5    ,   /* dummy , dummy , */  KC_6    ,    KC_7 ,    KC_8    ,    KC_9 ,    KC_0    , KC_DEL  , \
+                       KC_TAB            ,  KC_Q   ,    KC_W  ,    KC_E ,    KC_R  ,    KC_T    ,   /* dummy , dummy , */  KC_Y    ,    KC_U ,    KC_I    ,    KC_O ,    KC_P    , KC_BSPC , \
+                       LCTL(KC_RBRACKET) ,  KC_A   ,    KC_S  ,    KC_D ,    KC_F  ,    KC_G    ,   /* dummy , dummy , */  KC_H    ,    KC_J ,    KC_K    ,    KC_L ,    KC_SCLN , KC_ENT  , \
+                       KC_LSFT           ,  KC_Z   ,    KC_X  ,    KC_C ,    KC_V  ,    KC_B    ,   KC_INS   , KC_F1 ,     KC_N    ,    KC_M ,    KC_COMM , KC_DOT  ,    KC_SLSH , KC_RSFT , \
+                       KC_LCTL           ,  ADJUST ,  KC_LALT , KC_LALT ,  KC_LALT ,    KC_LGUI ,   LSFT     , RSFT  ,     _______ , _______ ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
+                        ),
   /* Lower
    * ,-----------------------------------------.             ,-----------------------------------------.
    * |      |   F1 |  F2  | f3   |  f4  | f5   |             |   f6 |  f7  |  f8  |  f9  | f10  | f11  |
    * |------+------+------+------+------+------|             |------+------+------+------+------+------|
-   * |      |      |      |      |      |      |             |   /  |   7  |   8  |  9   |  -   | F12  |
+   * |      |      |      |      |      |      |             |   -  |   7  |   8  |  9   |  -   | F12  |
    * |------+------+------+------+------+------|             |------+------+------+------+------+------|
-   * |      |      |      |      |      |      |             |   *  |   4  |   5  |  6   |  +   |      |
+   * |      |      |      |      |      |      |             |   +  |   4  |   5  |  6   |  +   |      |
    * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
-   * |      |      |      |      |      |      |      |      |      |   1  |   2  |  3   |  =   |      |
+   * |      |      |      |      |      |      |      |      |   /  |   1  |   2  |  3   |  =   |      |
    * |------+------+------+------+------+------+------+------+------+------+------+------+------+------|
    * |      |      |      |      |      |      |      |      |      |   0  |      |  .   |      |      |
    * `-------------------------------------------------------------------------------------------------'
@@ -149,13 +156,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                     _______ , _______  , TO(_QWERTY) , TO(_QWERTY) , KC_0    ,   _______ ,  KC_PGDN,_______,  _______ , _______ , _______   , _______   , _______ ,    _______ \
       ),
 
-  [_JAPANESE] = LAYOUT( \
-                     KC_ESC            ,  KC_1   ,    KC_2  ,    KC_3 ,    KC_4  ,    KC_5    ,   /* dummy , dummy , */  KC_6    ,    KC_7 ,    KC_8    ,    KC_9 ,    KC_0    , KC_DEL  , \
-                     KC_TAB            ,  KC_Q   ,    KC_W  ,    KC_E ,    KC_R  ,    KC_T    ,   /* dummy , dummy , */  KC_Y    ,    KC_U ,    KC_I    ,    KC_O ,    KC_P    , KC_BSPC , \
-                     LCTL(KC_RBRACKET) ,  KC_A   ,    KC_S  ,    KC_D ,    KC_F  ,    KC_G    ,   /* dummy , dummy , */  KC_H    ,    KC_J ,    KC_K    ,    KC_L ,    KC_SCLN , KC_ENT  , \
-                     KC_LSFT           ,  KC_Z   ,    KC_X  ,    KC_C ,    KC_V  ,    KC_B    ,   KC_INS   , KC_F1 ,     KC_N    ,    KC_M ,    KC_COMM , KC_DOT  ,    KC_SLSH , KC_RSFT , \
-                     KC_LCTL           ,  ADJUST ,  KC_LALT , KC_LALT ,  KC_LALT ,    KC_LGUI ,   LSFT     , RSFT  ,     _______ , _______ ,    KC_LEFT , KC_DOWN ,    KC_UP   , KC_RGHT \
-                      ),
 
   /* Adjust (Lower + Raise)
    * ,-----------------------------------------.             ,-----------------------------------------.
@@ -405,23 +405,53 @@ void render_status(struct CharacterMatrix *matrix) {
   char buf[40];
   snprintf(buf,sizeof(buf), "Undef-%ld", layer_state);
   matrix_write_P(matrix, PSTR("\nLayer: "));
-    switch (layer_state) {
-        case L_BASE:
-           matrix_write_P(matrix, PSTR("Default"));
-           break;
-        case L_RAISE:
-           matrix_write_P(matrix, PSTR("Raise"));
-           break;
-        case L_LOWER:
-           matrix_write_P(matrix, PSTR("Lower"));
-           break;
-        case L_ADJUST:
-        case L_ADJUST_TRI:
-           matrix_write_P(matrix, PSTR("Adjust"));
-           break;
-        default:
-           matrix_write(matrix, buf);
+
+  for (int i = 31; i >= 0 ; i--  ){
+    if (layer_state & (1UL << i)) {
+      switch(i){
+      case _QWERTY:
+        matrix_write_P(matrix, PSTR("Qwerty"));
+        break;
+      case _LOWER:
+        matrix_write_P(matrix, PSTR("LOWER"));
+        break;
+      case _RAISE:
+        matrix_write_P(matrix, PSTR("RAISE"));
+        break;
+      case _JAPANESE:
+        matrix_write_P(matrix, PSTR("HACHIMITSU"));
+        break;
+      case _ADJUST:
+        matrix_write_P(matrix, PSTR("ADJUST"));
+        break;
+      default:
+        matrix_write_P(matrix, PSTR("default"));
+        break;
+      }
+      break;
     }
+  }
+
+    /* switch (layer_state) { */
+    /*     case L_BASE: */
+    /*        matrix_write_P(matrix, PSTR("Default")); */
+    /*        break; */
+    /* case (1UL<<_QWERTY): */
+    /*   matrix_write_P(matrix, PSTR("Qwerty")); */
+    /*   break; */
+    /*     case L_RAISE: */
+    /*        matrix_write_P(matrix, PSTR("Raise")); */
+    /*        break; */
+    /*     case L_LOWER: */
+    /*        matrix_write_P(matrix, PSTR("Lower")); */
+    /*        break; */
+    /*     case L_ADJUST: */
+    /*     case L_ADJUST_TRI: */
+    /*        matrix_write_P(matrix, PSTR("Adjust")); */
+    /*        break; */
+    /*     default: */
+    /*        matrix_write(matrix, buf); */
+    /* } */
 
   // Host Keyboard LED Status
   char led[40];
