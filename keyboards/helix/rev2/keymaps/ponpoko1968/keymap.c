@@ -279,7 +279,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
           layer_off(_JAPANESE);
         }else{
           if(keymap_config.swap_lalt_lgui==false){
+            /* 蜂蜜日本語入力へ */
             register_code(KC_LANG1);
+            /*練習用に「ひらがな」固定に */
+            register_code(KC_LCTL);
+            register_code(KC_LSFT);
+            register_code(KC_H);
           }else{
             SEND_STRING(SS_LALT("`"));
           }
@@ -289,6 +294,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         isHachimitsuPressed = !isHachimitsuPressed;
       }else{
         if(isHachimitsuPressed){
+          /* 蜂蜜日本語入力解除 */
+          unregister_code(KC_H);
+          unregister_code(KC_LSFT);
+          unregister_code(KC_LCTL);
           unregister_code(KC_LANG2);
         }else{
           unregister_code(KC_LANG1);
