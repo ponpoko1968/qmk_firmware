@@ -129,7 +129,7 @@ enum macro_keycodes {
    */
   [_LOWER] = LAYOUT( \
                     _______ , KC_F1   ,   KC_F2    ,   KC_F3    ,   KC_F4 ,   KC_F5 ,                        KC_F6 ,   KC_F7   ,   KC_F8 ,   KC_F9 ,   KC_F10 ,    KC_F11 , \
-                    _______ , _______ , _______    , _______    , _______ , _______ ,                        KC_MINUS , KC_7   ,   KC_8    , KC_9    , KC_MINUS ,  KC_F12   , \
+                    _______ , _______ , _______    , _______    , _______ , _______ ,                        KC_MINUS , KC_7   ,   KC_8    , KC_9    , KC_MINUS ,  _______  , \
                     _______ , _______ , _______    , _______    , _______ , _______ ,                        KC_PLUS , KC_4    ,   KC_5    , KC_6    , KC_PLUS  ,   _______ , \
                     _______ , _______ , _______    , _______    , _______ , _______ , _______ ,    _______ , KC_SLSH , KC_1    ,   KC_2     ,KC_3      , KC_EQL  ,    _______ , \
                     _______ , _______ , _______    , _______    , _______ , _______ , _______ ,    _______ , _______ , KC_0    ,   _______,  KC_DOT   , _______ , _______ \
@@ -581,7 +581,7 @@ const der_nn_key_combination_t PROGMEM der_nn_key_combinations[] =
     {.key_combo = {NN_E, NN_NO, NN_NO}, .key_sequence = KS_TE},
 
   /* R */
-    /* {.key_combo = {NN_R, NN_LSFT, NN_NO}, .key_sequence = KS_YO}, */
+    {.key_combo = {NN_R, NN_LSFT, NN_NO}, .key_sequence = {KC_MINS}},
     {.key_combo = {NN_R, NN_RSFT, NN_NO}, .key_sequence = KS_ZE},
     {.key_combo = {NN_R, NN_NO, NN_NO}, .key_sequence = KS_SE},
 
