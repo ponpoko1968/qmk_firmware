@@ -73,7 +73,8 @@ enum custom_keycodes {
   RSFT,
   LSFT,
   HACHIMITSU,
-  RGBRST
+  RGBRST,
+  TGL_KANA
 };
  
 enum macro_keycodes {
@@ -103,8 +104,8 @@ enum macro_keycodes {
                      KC_ESC            ,  KC_1   ,    KC_2   ,    KC_3   ,    KC_4  ,    KC_5    ,   /* dummy , dummy          , */  KC_6      ,    KC_7  ,    KC_8    ,    KC_9    ,    KC_0    , KC_DEL   , \
                      KC_TAB            ,  KC_Q   ,    KC_W   ,    KC_E   ,    KC_R  ,    KC_T    ,   /* dummy , dummy          , */  KC_Y      ,    KC_U  ,    KC_I    ,    KC_O    ,    KC_P    , KC_BSPC  , \
                      LCTL(KC_RBRACKET) ,  KC_A   ,    KC_S   ,    KC_D   ,    KC_F  ,    KC_G    ,   /* dummy , dummy          , */  KC_H      ,    KC_J  ,    KC_K    ,    KC_L    ,    KC_SCLN , KC_ENT   , \
-                     KC_LSFT           ,  KC_Z   ,    KC_X   ,    KC_C   ,    KC_V  ,    KC_B    ,   KC_INS   , KC_F1          ,     KC_N      ,    KC_M  ,    KC_COMM , KC_DOT     ,    KC_SLSH , KC_RSFT  , \
-                     KC_LCTL           ,  ADJUST ,TG(_LOWER) ,TG(_RAISE) ,  KC_LALT ,    KC_LGUI ,   LOWER    , LGUI(KC_SPACE) , LT(_RAISE,KC_SPACE), HACHIMITSU ,    KC_LEFT , KC_DOWN    ,    KC_UP , KC_RGHT \
+                     KC_LSFT           ,  KC_Z   ,    KC_X   ,    KC_C   ,    KC_V  ,    KC_B    ,   KC_INS   , KC_F1          ,     KC_N      ,    KC_M  ,    MT(MOD_RCTL, KC_COMM) , KC_DOT     ,    KC_SLSH , KC_RSFT  , \
+                     KC_LCTL           ,  ADJUST ,TG(_LOWER) ,TG(_RAISE) ,  KC_LALT ,    KC_LGUI ,   LOWER    , TGL_KANA , LT(_RAISE,KC_SPACE), HACHIMITSU ,    KC_LEFT , KC_DOWN    ,    KC_UP , KC_RGHT \
                       ),
 
   [_JAPANESE] = LAYOUT( \
@@ -150,8 +151,8 @@ enum macro_keycodes {
    */
   [_RAISE] = LAYOUT( \
                     KC_TILD , KC_EXLM  , KC_AT       ,   KC_HASH   , KC_DLR  ,  KC_PERC ,                    KC_CIRC   , KC_AMPR , KC_ASTR  , KC_LPRN , KC_RPRN   , _______   , \
-                    _______ ,  KC_HOME, KC_UP        ,   KC_EXLM   ,  KC_AT  ,  KC_TILDE,                    KC_MINS  ,  KC_EQL  , KC_LBRC ,  KC_RBRC , KC_BSLASH , KC_F12    , \
-                    _______ , KC_LEFT  ,KC_DOWN      ,   KC_RIGHT  ,  KC_DLR ,  KC_PERC ,                    KC_UNDS ,   KC_PLUS , KC_LCBR  , KC_RCBR , KC_COLN   , KC_PIPE    , \
+                    _______ ,  KC_HOME, KC_MS_UP        ,   KC_EXLM   ,  KC_AT  ,  KC_TILDE,                    KC_MINS  ,  KC_EQL  , KC_LBRC ,  KC_RBRC , KC_BSLASH , KC_F12    , \
+                    _______ , KC_MS_LEFT  ,KC_MS_DOWN      ,   KC_MS_RIGHT  ,  KC_DLR ,  KC_PERC ,                    KC_UNDS ,   KC_PLUS , KC_LCBR  , KC_RCBR , KC_COLN   , KC_PIPE    , \
                     _______ , KC_END   ,  KC_LT      ,   KC_GT     ,  KC_HASH,  KC_GRAVE,  KC_PGUP,_______,  KC_QUOT ,   KC_DQT  ,  KC_LT  , KC_GT    , KC_QUES ,    _______ , \
                     _______ , _______  , TO(_QWERTY) , TO(_QWERTY) , KC_0    ,   _______,  KC_PGDN,_______,  _______ , _______ , _______   , _______   , _______ ,    _______ \
       ),
@@ -217,14 +218,115 @@ void update_tri_layer_RGB(uint8_t layer1, uint8_t layer2, uint8_t layer3) {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   static bool isHachimitsuPressed = false;
+  static bool isControlPressed = false;
     switch (keycode) {
+    case KC_LCTL:
+      if (record->event.pressed){
+        isControlPressed = true;
+      }
+      else{
+        isControlPressed = false;
+      }
+      break;
+    case KC_H:
+      if (keymap_config.swap_lalt_lgui)  { /* windows */
+        if (record->event.pressed && isControlPressed){
+          unregister_code(KC_LCTL);
+          tap_code(KC_BSPC);
+          register_code(KC_LCTL);
+          return false;
+        }
+      }
+      break;
+    case KC_E:
+      if (keymap_config.swap_lalt_lgui)  { /* windows */
+        if (record->event.pressed && isControlPressed){
+          unregister_code(KC_LCTL);
+          tap_code(KC_END);
+          register_code(KC_LCTL);
+          return false;
+        }
+      }
+      break;
+    case KC_A:
+      if (keymap_config.swap_lalt_lgui)  { /* windows */
+        if (record->event.pressed && isControlPressed){
+          unregister_code(KC_LCTL);
+          tap_code(KC_HOME);
+          register_code(KC_LCTL);
+          return false;
+        }
+      }
+      break;
+    case KC_B:
+      if (keymap_config.swap_lalt_lgui)  { /* windows */
+        if (record->event.pressed && isControlPressed){
+          unregister_code(KC_LCTL);
+          tap_code(KC_LEFT);
+          register_code(KC_LCTL);
+          return false;
+        }
+      }
+      break;
+    case KC_F:
+      if (keymap_config.swap_lalt_lgui)  { /* windows */
+        if (record->event.pressed && isControlPressed){
+          unregister_code(KC_LCTL);
+          tap_code(KC_RIGHT);
+          register_code(KC_LCTL);
+          return false;
+        }
+      }
+      break;
+    case KC_D:
+      if (keymap_config.swap_lalt_lgui)  { /* windows */
+        if (record->event.pressed && isControlPressed){
+          unregister_code(KC_LCTL);
+          tap_code(KC_DEL);
+          register_code(KC_LCTL);
+          return false;
+        }
+      }
+      break;
+    case KC_P:
+      if (keymap_config.swap_lalt_lgui)  { /* windows */
+        if (record->event.pressed && isControlPressed){
+          unregister_code(KC_LCTL);
+          tap_code(KC_UP);
+          register_code(KC_LCTL);
+          return false;
+        }
+      }
+    case KC_N:
+      if (keymap_config.swap_lalt_lgui)  { /* windows */
+        if (record->event.pressed && isControlPressed){
+          unregister_code(KC_LCTL);
+          tap_code(KC_DOWN);
+          register_code(KC_LCTL);
+          return false;
+        }
+      }
+      break;
+    case KC_K:
+      if (keymap_config.swap_lalt_lgui)  { /* windows */
+        if (record->event.pressed && isControlPressed){
+          unregister_code(KC_LCTL);
+          register_code(KC_LSFT);
+          tap_code(KC_END);
+          unregister_code(KC_LSFT);
+          tap_code(KC_DEL);
+          register_code(KC_LCTL);
+          return false;
+        }
+      }
+      break;
     case QWERTY:
-    if (record->event.pressed) {
+      if (record->event.pressed) {
 #ifdef AUDIO_ENABLE
-      PLAY_SONG(tone_qwerty);
+        PLAY_SONG(tone_qwerty);
 #endif
-      persistent_default_layer_set(1UL<<_QWERTY);
-    }
+        persistent_default_layer_set(1UL<<_QWERTY);
+      }
     return false;
     break;
     case LOWER:
@@ -268,17 +370,29 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return false;
     break;
 
+    case TGL_KANA:
+      if (!record->event.pressed) {
+        if(keymap_config.swap_lalt_lgui==false){ /* Mac */
+          register_code(KC_LGUI);
+          register_code(KC_SPACE);
+          unregister_code(KC_SPACE);
+          unregister_code(KC_LGUI);
+        }else{
+          SEND_STRING(SS_LALT("`"));
+        }
+      }
+      break;
     case HACHIMITSU:
       if (record->event.pressed) {
         if (isHachimitsuPressed){
-          if(keymap_config.swap_lalt_lgui==false){
+          if(keymap_config.swap_lalt_lgui==false){ /* Mac */
             register_code(KC_LANG2);
           }else{
             SEND_STRING(SS_LALT("`"));
           }
           layer_off(_JAPANESE);
         }else{
-          if(keymap_config.swap_lalt_lgui==false){
+          if(keymap_config.swap_lalt_lgui==false){ /* Mac */
             /* 蜂蜜日本語入力へ */
             register_code(KC_LANG1);
             /*練習用に「ひらがな」固定に */
