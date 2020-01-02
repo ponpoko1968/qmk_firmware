@@ -9,6 +9,8 @@ firmware directly.
 Whenever you type on 1 particular key, here is the chain of actions taking
 place:
 
+あなたが特定のキーを一つ押したとき、下に示すような一連の動作が起きます。
+
 ``` text
 +------+         +-----+       +----------+      +----------+     +----+
 | User |-------->| Key |------>| Firmware |----->| USB wire |---->| OS |
@@ -18,10 +20,12 @@ place:
 This scheme is a very simple view of what's going on, and more details follow
 in the next sections.
 
+
+
 ## 1. You Press a Key
 
 Whenever you press a key, the firmware of your keyboard can register this event.
-It can register when the key is pressed, held and released.
+It can register when the key is **pressed, held and released**.
 
 This usually happens with a periodic scan of key presses. This speed often is limited by the mechanical key response time, the protocol to transfer those key presses (here USB HID), and by the software it is used in.
 
@@ -73,4 +77,4 @@ Yet, it does come with multiple disadvantages:
 
  - Tied to a specific OS at a time (need recompilation when changing OS);
  - Within a given OS, does not work in all software;
- - Limited to a subset of Unicode on some systems.
+ - Limited to a subset of Unicode on some s
