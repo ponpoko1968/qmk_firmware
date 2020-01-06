@@ -32,6 +32,7 @@ enum custom_keycodes {
 
 };
 
+extern const char *read_mode_icon(bool swap);
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
@@ -84,22 +85,21 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |   `  |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |-------.    ,-------|      | Left | Down |  Up  |Right |      |
+ * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |-------.    ,-------|      | Left | Down |  Up  |Right |      |
  * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
  * |  F7  |  F8  |  F9  | F10  | F11  | F12  |-------|    |-------|   +  |   -  |   =  |   [  |   ]  |   \  |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |RAISE |BackSP| RGUI |
+ *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |RAISE |BackSP|  RGUI |
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
 
 [_RAISE] = LAYOUT( \
                   KC_TILD , KC_EXLM  , KC_AT    ,  KC_HASH   , KC_DLR  ,  KC_PERC ,                    KC_CIRC   , KC_AMPR , KC_ASTR  , KC_LPRN , KC_RPRN   , _______   , \
-                  _______ , KC_HOME ,  KC_MS_UP ,  KC_EXLM   , KC_AT   ,  KC_TILDE,                    KC_MINS  ,  KC_EQL  , KC_LBRC ,  KC_RBRC , KC_BSLASH , KC_F12    , \
-                  _______ , KC_MS_LEFT,KC_MS_DOWN, KC_MS_RIGHT,KC_DLR ,   KC_PERC ,                    KC_UNDS ,   KC_PLUS , KC_LCBR  , KC_RCBR , KC_COLN   , KC_PIPE    , \
+                  _______ , KC_HOME ,  KC_UP ,     KC_EXLM   , KC_AT   ,  KC_TILDE,                    KC_MINS  ,  KC_EQL  , KC_LBRC ,  KC_RBRC , KC_BSLASH , KC_F12    , \
+                  _______ , KC_LEFT,   KC_DOWN,    KC_RIGHT,KC_DLR ,   KC_PERC ,                    KC_UNDS ,   KC_PLUS , KC_LCBR  , KC_RCBR , KC_COLN   , KC_PIPE    , \
                   _______ , KC_END,    KC_LT,      KC_GT,      KC_HASH,   KC_GRAVE, KC_PGUP, _______,  KC_QUOT ,   KC_DQT  , KC_LT  ,   KC_GT   , KC_QUES ,   _______ , \
                                                          _______, _______, _______, KC_PGDN, _______,  _______, _______, _______\
-
 ),
 /* ADJUST
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -169,12 +169,12 @@ void matrix_render_user(struct CharacterMatrix *matrix) {
     // If you want to change the display of OLED, you need to change here
     matrix_write_ln(matrix, read_layer_state());
     matrix_write_ln(matrix, read_keylog());
-    matrix_write_ln(matrix, read_keylogs());
-    //matrix_write_ln(matrix, read_mode_icon(keymap_config.swap_lalt_lgui));
+    //matrix_write_ln(matrix, read_keylogs());
     //matrix_write_ln(matrix, read_host_led_state());
     //matrix_write_ln(matrix, read_timelog());
   } else {
-    matrix_write(matrix, read_logo());
+    //matrix_write(matrix, read_logo());
+    matrix_write_ln(matrix, read_mode_icon(keymap_config.swap_lalt_lgui));
   }
 }
 
