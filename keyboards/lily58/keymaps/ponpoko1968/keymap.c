@@ -25,8 +25,8 @@ extern uint8_t is_master;
 
 enum custom_keycodes {
   QWERTY = SAFE_RANGE,
-  LOWER,
   RAISE,
+  LOWER,
   ADJUST,
   TGL_KANA
 
@@ -55,29 +55,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_ESC,   KC_1,   KC_2,    KC_3,    KC_4,   KC_5,                               KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_DEL, \
   KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,   KC_T,                               KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSPC, \
   KC_LSFT,  KC_A,   KC_S,    KC_D,    KC_F,   KC_G,                               KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_ENT, \
-  KC_LCTRL,  KC_Z,   KC_X,   KC_C,    KC_V,   KC_B, LCTL(KC_RBRACKET),      LOWER,KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,  KC_RSFT, \
-  /*                   */TG(_LOWER), KC_LALT,  KC_LGUI, KC_LSFT, TGL_KANA, LT(_RAISE,KC_SPACE),KC_RCTL, ADJUST \
-),
-/* LOWER
- * ,-----------------------------------------.                    ,-----------------------------------------.
- * |      |      |      |      |      |      |                    |      |      |      |      |      | F12  |
- * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |                    |  F7  |   7  |   8  |   9  |   (  | F12  |
- * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |   `  |   !  |   @  |   #  |   $  |   %  |-------.    ,-------|   ^  |   4  |   5  |   6  |   )  |   -  |
- * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------|    |-------|      |   1  |   2  |   3  |   }  |   |  |
- * `-----------------------------------------/       /     \      \-----------------------------------------'
- *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |RAISE |BackSP| RGUI |
- *                   |      |      |      |/       /         \      \ |      |      |      |
- *                   `----------------------------'           '------''--------------------'
- */
-[_LOWER] = LAYOUT( \
-  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                     KC_F7,   KC_F8,   KC_F9,   KC_F10, KC_F11,  KC_F12, \
-  KC_GRV, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                    KC_MINUS,KC_7,    KC_8,    KC_9,   KC_LPRN, _______, \
-  KC_GRV, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                    KC_PLUS, KC_4,    KC_5,    KC_6,   KC_RPRN, _______, \
-  _______, _______, _______, _______, _______, _______, _______, KC_EQL,  KC_SLSH, KC_1,    KC_2,    KC_3,   XXXXXXX, XXXXXXX, \
-  /*                    */TG(_LOWER), _______, _______, _______, KC_ASTR, LT(_RAISE,KC_0),  _______, KC_DOT \
+  KC_LCTRL,  KC_Z,   KC_X,   KC_C,    KC_V,   KC_B, LCTL(KC_RBRACKET), OSL(_LOWER),KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,  KC_RSFT, \
+  /*                   */MO(_LOWER), KC_LALT,  KC_LGUI, KC_LSFT,    TGL_KANA, LT(_RAISE,KC_SPACE),KC_RCTL, ADJUST \
 ),
 /* RAISE
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -95,11 +74,32 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_RAISE] = LAYOUT( \
-                  KC_TILD , KC_EXLM  , KC_AT    ,  KC_HASH   , KC_DLR  ,  KC_PERC ,                    KC_CIRC   , KC_AMPR , KC_ASTR  , KC_LPRN , KC_RPRN   , _______   , \
-                  _______ , KC_HOME ,  KC_UP ,     KC_EXLM   , KC_AT   ,  KC_TILDE,                    KC_MINS  ,  KC_EQL  , KC_LBRC ,  KC_RBRC , KC_BSLASH , KC_F12    , \
-                  _______ , KC_LEFT,   KC_DOWN,    KC_RIGHT,SGUI(KC_TAB), LGUI(KC_TAB) ,               KC_UNDS ,   KC_PLUS , KC_LCBR  , KC_RCBR , KC_COLN   , KC_PIPE    , \
-                  _______ , KC_END,    KC_LT,      KC_GT,      KC_HASH,   KC_GRAVE, KC_PGUP, KC_BSPC,  KC_QUOT ,   KC_DQT  , KC_LT  ,   KC_GT   , KC_QUES ,   _______ , \
-                                                         _______, _______, _______, KC_PGDN, _______,  _______, _______, _______\
+                  KC_TILD, KC_EXLM  , KC_AT    ,  KC_HASH   , KC_DLR  , KC_PERC ,                    KC_CIRC   , KC_AMPR , KC_ASTR  , KC_LPRN , KC_RPRN   , _______   , \
+                  KC_F1  , KC_HOME ,  KC_UP ,     KC_EXLM   , KC_AT   , KC_TILDE,                    KC_MINS  ,  KC_EQL  , KC_LBRC ,  KC_RBRC , KC_BSLASH , KC_F12    , \
+                  KC_F2  , KC_LEFT,   KC_DOWN,    KC_RIGHT,   KC_F4,    KC_F5 ,               KC_UNDS ,   KC_PLUS , KC_LCBR  , KC_RCBR , KC_COLN   , KC_PIPE    , \
+                  KC_F3  , KC_END,    KC_F6,      KC_F7,      KC_F8,    KC_GRAVE, KC_PGUP, KC_BSPC,   KC_QUOT ,   KC_DQT  , KC_LT  ,   KC_GT   , KC_QUES ,   _______ , \
+                                                KC_F9, KC_F10, _______, KC_PGDN, _______,  _______, _______, _______\
+),
+/* LOWER
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * |      |      |      |      |      |      |                    |      |      |      |      |      | F12  |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |  F1  |  F2  |  F3  |  F4  |  F5  |  F6  |                    |  F7  |   7  |   8  |   9  |   (  | F12  |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |   `  |   !  |   @  |   #  |   $  |   %  |-------.    ,-------|   ^  |   4  |   5  |   6  |   )  |   -  |
+ * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------|    |-------|      |   1  |   2  |   3  |   }  |   |  |
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |RAISE |BackSP| RGUI |
+ *                   |      |      |      |/       /         \      \ |      |      |      |
+ *                   `----------------------------'           '------''--------------------'
+ */
+[_LOWER] = LAYOUT( \
+  _______, KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                     KC_F6,   KC_F7,   KC_F8,   KC_F9,   KC_F10, KC_F11,  \
+  KC_GRV, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                    KC_MINUS,KC_7,    KC_8,    KC_9,   KC_LPRN, KC_F12, \
+  KC_GRV, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                    KC_PLUS, KC_4,    KC_5,    KC_6,   KC_RPRN, _______, \
+  _______, _______, _______, _______, _______, _______, _______, KC_EQL,  KC_SLSH, KC_1,    KC_2,    KC_3,   XXXXXXX, XXXXXXX, \
+  /*                    */KC_TRNS, _______, _______, _______, KC_ASTR, LT(_RAISE,KC_0),  _______, KC_DOT \
 ),
 /* ADJUST
  * ,-----------------------------------------.                    ,-----------------------------------------.
@@ -194,6 +194,8 @@ void iota_gfx_task_user(void) {
 #endif//SSD1306OLED
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  static bool isControlPressed = false;
+
   if (record->event.pressed) {
 #ifdef SSD1306OLED
     set_keylog(keycode, record);
@@ -202,6 +204,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   }
 
   switch (keycode) {
+  case KC_LCTL:
+    if (record->event.pressed){
+      isControlPressed = true;
+    }
+    else{
+      isControlPressed = false;
+    }
+    break;
   case QWERTY:
     if (record->event.pressed) {
       set_single_persistent_default_layer(_QWERTY);
@@ -236,6 +246,30 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     }
     return false;
     break;
+
+  case KC_H:
+    if (keymap_config.swap_lalt_lgui)  { /* windows */
+      if (record->event.pressed && isControlPressed){
+        unregister_code(KC_H);
+        unregister_code(KC_LCTL);
+        tap_code(KC_BSPC);
+        register_code(KC_LCTL);
+        return false;// keyrepeat
+      }
+    }
+    break;
+
+  case KC_E:
+    if (keymap_config.swap_lalt_lgui)  { /* windows */
+      if (record->event.pressed && isControlPressed){
+        unregister_code(KC_LCTL);
+        tap_code(KC_END);
+        register_code(KC_LCTL);
+        return false;
+      }
+    }
+    break;
+
   case TGL_KANA:
     if (!record->event.pressed) {
       if(keymap_config.swap_lalt_lgui==false){ /* Mac */
