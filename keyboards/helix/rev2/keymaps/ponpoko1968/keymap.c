@@ -307,19 +307,19 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         }
       }
       break;
-    case KC_K:
-      if (keymap_config.swap_lalt_lgui)  { /* windows */
-        if (record->event.pressed && isControlPressed){
-          unregister_code(KC_LCTL);
-          register_code(KC_LSFT);
-          tap_code(KC_END);
-          unregister_code(KC_LSFT);
-          tap_code(KC_DEL);
-          register_code(KC_LCTL);
-          return false;
-        }
-      }
-      break;
+    /* case KC_K: */
+    /*   if (keymap_config.swap_lalt_lgui)  { /\* windows *\/ */
+    /*     if (record->event.pressed && isControlPressed){ */
+    /*       unregister_code(KC_LCTL); */
+    /*       register_code(KC_LSFT); */
+    /*       tap_code(KC_END); */
+    /*       unregister_code(KC_LSFT); */
+    /*       tap_code(KC_DEL); */
+    /*       register_code(KC_LCTL); */
+    /*       return false; */
+    /*     } */
+    /*   } */
+      /* break; */
     case QWERTY:
       if (record->event.pressed) {
 #ifdef AUDIO_ENABLE
